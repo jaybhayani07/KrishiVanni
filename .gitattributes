@@ -1,0 +1,2 @@
+# Ignore Jupyter Notebooks in GitHub language statistics so Java/Kotlin show up properly
+*.ipynb linguist-detectable=false
