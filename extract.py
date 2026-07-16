@@ -10,7 +10,7 @@ for line in lines:
         if data.get("type") == "USER_INPUT":
             content = data.get("content", "")
             if "market" in content.lower() or "yard" in content.lower() or "price" in content.lower() or "mandi" in content.lower() or "agmarknet" in content.lower() or "data.gov.in" in content.lower():
-                # Print only first 200 chars to avoid massive logs
+
                 print(f"[{data.get('created_at')}] {content[:200].strip()}...")
     except:
         pass

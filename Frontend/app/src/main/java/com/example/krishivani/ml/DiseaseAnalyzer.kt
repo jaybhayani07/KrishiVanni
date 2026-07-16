@@ -19,7 +19,7 @@ class DiseaseAnalyzer(
 
     private var interpreter: Interpreter
     private var labels: List<String>
-    
+
     private val INPUT_SIZE = 224
     private val PIXEL_SIZE = 3
     private val IMAGE_MEAN = 0
@@ -45,45 +45,45 @@ class DiseaseAnalyzer(
 
     override fun analyze(image: ImageProxy) {
         val bitmap = image.toBitmap()
-        
-        // Center crop and scale to 224x224
+
+
         val scaledBitmap = cropAndScale(bitmap)
         val byteBuffer = convertBitmapToByteBuffer(scaledBitmap)
-        
+
         val result = Array(1) { FloatArray(labels.size) }
         interpreter.run(byteBuffer, result)
-        
+
         val maxIndex = result[0].indices.maxByOrNull { result[0][it] } ?: -1
         if (maxIndex != -1) {
             val confidence = result[0][maxIndex]
-            
-            // AI accuracy enhancement: If confidence is too low (< 60%), 
-            // the camera is probably pointing at a wall, face, or nothing.
+
+
+
             if (confidence < 0.60f) {
                 onResult("કેમેરાને પાંદડા પર બરાબર ફોકસ કરો\n(No clear leaf detected)")
             } else {
                 val label = labels[maxIndex]
-                
-                // Capitalize each word for better UI
+
+
                 val formattedLabel = label.split(" ").joinToString(" ") { it.replaceFirstChar { char -> char.uppercase() } }
-                
+
                 val outputText = "$formattedLabel (${String.format("%.1f", confidence * 100)}%)"
                 onResult(outputText)
             }
         }
-        
+
         image.close()
     }
-    
+
     private fun cropAndScale(bitmap: Bitmap): Bitmap {
         val minDim = Math.min(bitmap.width, bitmap.height)
         val matrix = Matrix()
         val scale = INPUT_SIZE.toFloat() / minDim
         matrix.postScale(scale, scale)
-        
+
         val xOffset = (bitmap.width - minDim) / 2
         val yOffset = (bitmap.height - minDim) / 2
-        
+
         return Bitmap.createBitmap(bitmap, xOffset, yOffset, minDim, minDim, matrix, true)
     }
 
@@ -105,7 +105,7 @@ class DiseaseAnalyzer(
         }
         return byteBuffer
     }
-    
+
     fun close() {
         interpreter.close()
     }

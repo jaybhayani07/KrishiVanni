@@ -23,9 +23,9 @@ public class HomeDashboardService {
         HomeDashboardData dashboardData;
 
         if (data.isEmpty()) {
-            // Create a default if database is entirely empty
+
             dashboardData = new HomeDashboardData();
-            dashboardData.setLocation("Junagadh"); // Default location name, frontend can override
+            dashboardData.setLocation("Junagadh");
             dashboardData.setWarningTitleGu("સામાન્ય સ્થિતિ");
             dashboardData.setWarningTitleEn("Normal Condition");
             dashboardData.setWarningDescGu("હાલમાં કોઈ મોટો ખતરો નથી.");
@@ -35,7 +35,7 @@ public class HomeDashboardService {
             dashboardData = data.get(0);
         }
 
-        // Fetch Live Weather from Open-Meteo
+
         try {
             OpenMeteoResponse weather = openMeteoService.fetchWeather(lat, lon);
             if (weather != null && weather.getCurrent() != null) {
@@ -52,7 +52,7 @@ public class HomeDashboardService {
 
                     List<HomeDashboardData.DailyForecast> forecastList = new java.util.ArrayList<>();
                     String[] gujDays = {"સોમ", "મંગળ", "બુધ", "ગુરુ", "શુક્ર", "શનિ", "રવિ"};
-                    
+
                     java.time.LocalDate todayLocalDate = java.time.LocalDate.now(java.time.ZoneId.of("Asia/Kolkata"));
                     int todayIndex = 0;
                     for (int i = 0; i < weather.getDaily().getTime().size(); i++) {
@@ -66,28 +66,28 @@ public class HomeDashboardService {
                     for (int i = todayIndex; i < weather.getDaily().getTime().size(); i++) {
                         HomeDashboardData.DailyForecast df = new HomeDashboardData.DailyForecast();
                         java.time.LocalDate date = java.time.LocalDate.parse(weather.getDaily().getTime().get(i));
-                        
-                        // If it's today, show "આજે" (Today) instead of the day name
+
+
                         if (i == todayIndex) {
                             df.setDayNameGu("આજે");
                         } else {
                             df.setDayNameGu(gujDays[date.getDayOfWeek().getValue() - 1]);
                         }
-                        
+
                         df.setMaxTemp(String.format("%.0f°", weather.getDaily().getMaxTemp().get(i)));
                         int code = weather.getDaily().getWeatherCode().get(i);
                         int prob = 0;
                         if (weather.getDaily().getPrecipitationProbabilityMax() != null && weather.getDaily().getPrecipitationProbabilityMax().size() > i) {
                             prob = weather.getDaily().getPrecipitationProbabilityMax().get(i);
                         }
-                        
+
                         if (code <= 3) {
                             df.setIconName("Sunny");
                         } else if (code >= 95) {
-                            // Only show Thunder if there's actually a chance of rain/storm (>= 20%)
+
                             df.setIconName(prob >= 20 ? "Thunder" : "Cloud");
                         } else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) {
-                            // Only show Rain if there's actually a chance of rain (>= 20%)
+
                             df.setIconName(prob >= 20 ? "Rain" : "Cloud");
                         } else {
                             df.setIconName("Cloud");
@@ -97,43 +97,43 @@ public class HomeDashboardService {
                     dashboardData.setForecast(forecastList);
                 }
 
-                // --- Fetch Real Satellite NDVI Data or fallback to simulation ---
+
                 AgroNdviResponse latestScan = agromonitoringService.getLatestNdvi(lat, lon);
                 double simulatedNdvi;
-                
+
                 if (latestScan != null && latestScan.getData() != null && latestScan.getData().getMean() != null) {
-                    simulatedNdvi = latestScan.getData().getMean(); // Use real API data!
-                    
-                    // Set the REAL date from satellite!
+                    simulatedNdvi = latestScan.getData().getMean();
+
+
                     java.time.LocalDate realDate = java.time.Instant.ofEpochSecond(latestScan.getDt())
                             .atZone(java.time.ZoneId.systemDefault()).toLocalDate();
-                    
+
                     dashboardData.setLastScanDate(formatGujaratiDate(realDate));
-                    // Sentinel-2 scans every 5 days, ensure next scan is in the future
+
                     java.time.LocalDate today = java.time.LocalDate.now();
                     java.time.LocalDate nextScan = realDate.plusDays(5);
                     while (nextScan.isBefore(today) || nextScan.isEqual(today)) {
                         nextScan = nextScan.plusDays(5);
                     }
                     dashboardData.setNextScanDate(formatGujaratiDate(nextScan));
-                    
-                    // Fetch and save the REAL Satellite Image URL!
+
+
                     String imageUrl = agromonitoringService.getLatestImageUrl(lat, lon);
                     if (imageUrl != null) {
                         dashboardData.setSatelliteImageUrl(imageUrl);
                     }
                 } else {
-                    // Fallback to simulation if API key is missing or failed
-                    // Specifically for Kutch region (Lat ~23.7, Lon ~69.8), simulate a low NDVI (drought/stress condition)
+
+
                     if (lat > 23.0 && lat < 24.5 && lon > 68.0 && lon < 71.0) {
-                        simulatedNdvi = 0.25 + (Math.random() * 0.15); // Random between 0.25 and 0.40
+                        simulatedNdvi = 0.25 + (Math.random() * 0.15);
                     } else {
-                        simulatedNdvi = 0.65 + (Math.random() * 0.20); // Random between 0.65 and 0.85
+                        simulatedNdvi = 0.65 + (Math.random() * 0.20);
                     }
                 }
-                
+
                 dashboardData.setNdviValue(String.format("%.2f", simulatedNdvi));
-                
+
                 if (simulatedNdvi >= 0.75) {
                     dashboardData.setCropHealthStatusGu("ઉત્તમ");
                     dashboardData.setCropHealthStatusEn("Excellent");
@@ -148,33 +148,33 @@ public class HomeDashboardService {
                     dashboardData.setCropHealthStatusEn("Poor");
                 }
 
-                // If fallback simulation was used, always set relative dummy dates
-                // so it's never stuck in the past if the Agromonitoring API limit is reached
+
+
                 if (latestScan == null || latestScan.getData() == null || latestScan.getData().getMean() == null) {
                     dashboardData.setLastScanDate(formatGujaratiDate(LocalDate.now().minusDays(2)));
                     dashboardData.setNextScanDate(formatGujaratiDate(LocalDate.now().plusDays(3)));
                 }
 
-                // Save updated live data to DB
+
                 homeDashboardRepository.save(dashboardData);
             }
         } catch (Exception e) {
-            // Log error, continue with cached data
+
             System.err.println("Failed to fetch live weather: " + e.getMessage());
         }
 
-        // --- Load YouTube Consensus Data ---
+
         try {
             java.io.File consensusFile = new java.io.File("youtube_consensus.json");
             if (consensusFile.exists()) {
                 com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
                 com.fasterxml.jackson.databind.JsonNode rootNode = mapper.readTree(consensusFile);
-                
+
                 if (rootNode.has("combinedWeatherAlert")) {
                     dashboardData.setWarningTitleGu("ખેડૂત સંમતિ (Farmers Consensus)");
                     dashboardData.setWarningDescGu(rootNode.get("combinedWeatherAlert").asText());
                 }
-                
+
                 if (rootNode.has("farmingTips") && rootNode.get("farmingTips").isArray()) {
                     java.util.List<String> tips = new java.util.ArrayList<>();
                     for (com.fasterxml.jackson.databind.JsonNode tipNode : rootNode.get("farmingTips")) {
@@ -182,27 +182,27 @@ public class HomeDashboardService {
                     }
                     dashboardData.setExpertFarmingTips(tips);
                 }
-                
+
                 if (rootNode.has("pareshForecast")) {
                     dashboardData.setPareshForecast(rootNode.get("pareshForecast").asText());
                 }
-                
+
                 if (rootNode.has("ambalalForecast")) {
                     dashboardData.setAmbalalForecast(rootNode.get("ambalalForecast").asText());
                 }
-                
+
                 if (rootNode.has("lastUpdated")) {
                     dashboardData.setYoutubeLastUpdated(rootNode.get("lastUpdated").asText());
                 }
-                
+
                 if (rootNode.has("agreementPercentage")) {
                     dashboardData.setAgreementPercentage(rootNode.get("agreementPercentage").asText());
                 }
-                
+
                 if (rootNode.has("pareshIsLive")) {
                     dashboardData.setPareshIsLive(rootNode.get("pareshIsLive").asBoolean());
                 }
-                
+
                 if (rootNode.has("ambalalIsLive")) {
                     dashboardData.setAmbalalIsLive(rootNode.get("ambalalIsLive").asBoolean());
                 }
@@ -211,7 +211,7 @@ public class HomeDashboardService {
             System.err.println("Failed to load YouTube consensus data: " + e.getMessage());
         }
 
-        // --- Load YouTube Analysis Status ---
+
         try {
             java.io.File statusFile = new java.io.File("youtube_status.json");
             if (statusFile.exists()) {

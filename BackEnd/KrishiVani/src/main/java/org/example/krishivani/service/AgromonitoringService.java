@@ -18,17 +18,17 @@ public class AgromonitoringService {
 
     private final RestTemplate restTemplate = new RestTemplate();
     private final String BASE_URL = "http://api.agromonitoring.com/agro/1.0";
-    
-    // Cache to prevent creating too many polygons and exhausting the 1000 Hectare free limit
+
+
     private final ConcurrentHashMap<String, String> polyCache = new ConcurrentHashMap<>();
 
     public AgroNdviResponse getLatestNdvi(double lat, double lon) {
         if ("YOUR_API_KEY_HERE".equals(apiKey) || apiKey == null || apiKey.isEmpty()) {
-            return null; // Return null to fallback to dummy data if API key isn't set yet
+            return null;
         }
 
         try {
-            // Round to 2 decimal places (~1.1 km resolution) to reuse polygons for nearby locations
+
             String cacheKey = String.format("%.2f_%.2f", lat, lon);
             String polyId = polyCache.get(cacheKey);
 
@@ -46,9 +46,9 @@ public class AgromonitoringService {
                 System.out.println("♻️ Using cached Polygon: " + polyId);
             }
 
-            // Fetch NDVI History
-            long endTimestamp = (System.currentTimeMillis() / 1000) - 86400; // Subtract 1 day to avoid "after now" error
-            long startTimestamp = endTimestamp - (30 * 24 * 60 * 60); // Last 30 days
+
+            long endTimestamp = (System.currentTimeMillis() / 1000) - 86400;
+            long startTimestamp = endTimestamp - (30 * 24 * 60 * 60);
 
             String ndviUrl = BASE_URL + "/ndvi/history?polyid=" + polyId +
                     "&start=" + startTimestamp + "&end=" + endTimestamp + "&appid=" + apiKey;
@@ -56,7 +56,7 @@ public class AgromonitoringService {
             AgroNdviResponse[] responses = restTemplate.getForObject(ndviUrl, AgroNdviResponse[].class);
 
             if (responses != null && responses.length > 0) {
-                // Get the most recent scan safely by finding max dt
+
                 AgroNdviResponse latestScan = responses[0];
                 for (AgroNdviResponse r : responses) {
                     if (r.getDt() != null && r.getDt() > latestScan.getDt()) {
@@ -74,7 +74,7 @@ public class AgromonitoringService {
         } catch (Exception e) {
             System.err.println("Agromonitoring API Error: " + e.getMessage());
         }
-        return null; // Fallback
+        return null;
     }
 
     public String getLatestImageUrl(double lat, double lon) {
@@ -87,11 +87,11 @@ public class AgromonitoringService {
             String polyId = polyCache.get(cacheKey);
 
             if (polyId == null) {
-                // If polygon isn't in cache, we can't get an image (it should have been created by getLatestNdvi)
+
                 return null;
             }
 
-            long endTimestamp = (System.currentTimeMillis() / 1000) - 86400; // Subtract 1 day to avoid "after now" error
+            long endTimestamp = (System.currentTimeMillis() / 1000) - 86400;
             long startTimestamp = endTimestamp - (30 * 24 * 60 * 60);
 
             String imageUrl = BASE_URL + "/image/search?polyid=" + polyId +
@@ -100,7 +100,7 @@ public class AgromonitoringService {
             AgroImageResponse[] responses = restTemplate.getForObject(imageUrl, AgroImageResponse[].class);
 
             if (responses != null && responses.length > 0) {
-                // Safely get the newest image by finding max dt
+
                 AgroImageResponse latestImage = responses[0];
                 for (AgroImageResponse r : responses) {
                     if (r.getDt() != null && r.getDt() > latestImage.getDt()) {
@@ -127,15 +127,15 @@ public class AgromonitoringService {
         AgroPolygonRequest.GeoJson geoJson = new AgroPolygonRequest.GeoJson();
         AgroPolygonRequest.Geometry geometry = new AgroPolygonRequest.Geometry();
 
-        // Create a ~400x400 meter square around the point (0.002 degrees) to meet the 1 Hectare minimum requirement
+
         double offset = 0.002;
         geometry.setCoordinates(new double[][][]{
                 {
-                        {lon - offset, lat + offset}, // Top Left
-                        {lon + offset, lat + offset}, // Top Right
-                        {lon + offset, lat - offset}, // Bottom Right
-                        {lon - offset, lat - offset}, // Bottom Left
-                        {lon - offset, lat + offset}  // Top Left (Close polygon)
+                        {lon - offset, lat + offset},
+                        {lon + offset, lat + offset},
+                        {lon + offset, lat - offset},
+                        {lon - offset, lat - offset},
+                        {lon - offset, lat + offset}
                 }
         });
 
@@ -150,9 +150,9 @@ public class AgromonitoringService {
         } catch (org.springframework.web.client.RestClientResponseException e) {
             String errorBody = e.getResponseBodyAsString();
             System.err.println("❌ API Error: " + e.getStatusCode() + " - " + errorBody);
-            
-            // Smart Recovery: If the polygon already exists (e.g. after a server restart), Agromonitoring throws a 422 error
-            // but kindly gives us the existing ID in the error message! We will extract it and reuse it to save the free limit!
+
+
+
             if (e.getStatusCode().value() == 422 && errorBody.contains("already existed polygon")) {
                 try {
                     int startIndex = errorBody.indexOf("polygon '") + 9;

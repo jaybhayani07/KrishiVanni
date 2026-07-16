@@ -24,7 +24,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.krishivani.ui.theme.*
 import com.example.krishivani.viewmodel.MarketViewModel
 
-// Mock Data
 val regions = listOf("સૌરાષ્ટ્ર", "ઉત્તર ગુજરાત", "મધ્ય ગુજરાત", "દક્ષિણ ગુજરાત", "કચ્છ")
 val districtMap = mapOf(
     "સૌરાષ્ટ્ર" to listOf("રાજકોટ (Rajkot)", "જુનાગઢ (Junagadh)", "અમરેલી (Amreli)", "ભાવનગર (Bhavnagar)", "સુરેન્દ્રનગર (Surendranagar)", "જામનગર (Jamnagar)", "પોરબંદર (Porbandar)", "મોરબી (Morbi)", "બોટાદ (Botad)", "ગીર સોમનાથ (Gir Somnath)", "દેવભૂમિ દ્વારકા (Devbhumi Dwarka)"),
@@ -34,7 +33,7 @@ val districtMap = mapOf(
     "કચ્છ" to listOf("કચ્છ (Kutch)")
 )
 val yardMap = mapOf(
-    // Saurashtra
+
     "રાજકોટ (Rajkot)" to listOf("રાજકોટ બેડી APMC", "ગોંડલ APMC", "જસદણ APMC", "ધોરાજી APMC", "જેતપુર APMC", "ઉપલેટા APMC"),
     "જુનાગઢ (Junagadh)" to listOf("જુનાગઢ APMC", "વિસાવદર APMC", "માણાવદર APMC"),
     "અમરેલી (Amreli)" to listOf("અમરેલી APMC", "સાવરકુંડલા APMC", "બાબરા APMC"),
@@ -46,16 +45,16 @@ val yardMap = mapOf(
     "બોટાદ (Botad)" to listOf("બોટાદ APMC"),
     "ગીર સોમનાથ (Gir Somnath)" to listOf("ઉના APMC", "વેરાવળ APMC", "તાલાલા APMC"),
     "દેવભૂમિ દ્વારકા (Devbhumi Dwarka)" to listOf("ખંભાળિયા APMC", "ભાણવડ APMC"),
-    
-    // Uttar Gujarat
+
+
     "ગાંધીનગર (Gandhinagar)" to listOf("દહેગામ APMC", "માણસા APMC", "કલોલ APMC"),
     "મહેસાણા (Mehsana)" to listOf("ઊંઝા APMC", "મહેસાણા APMC", "વિસનગર APMC", "કડી APMC"),
     "પાટણ (Patan)" to listOf("પાટણ APMC", "હારીજ APMC", "રાધનપુર APMC"),
     "બનાસકાંઠા (Banaskantha)" to listOf("ડીસા APMC", "પાલનપુર APMC", "થરાદ APMC", "ધાનેરા APMC"),
     "સાબરકાંઠા (Sabarkantha)" to listOf("હિંમતનગર APMC", "ઈડર APMC", "પ્રાંતિજ APMC"),
     "અરવલ્લી (Aravalli)" to listOf("મોડાસા APMC", "બાયડ APMC"),
-    
-    // Madhya Gujarat
+
+
     "અમદાવાદ (Ahmedabad)" to listOf("અમદાવાદ APMC", "બાવળા APMC", "સાણંદ APMC", "ધોળકા APMC"),
     "ખેડા (Kheda)" to listOf("નડીયાદ APMC", "કપડવંજ APMC", "મહેમદાવાદ APMC"),
     "આણંદ (Anand)" to listOf("આણંદ APMC", "ઉમરેઠ APMC", "પેટલાદ APMC"),
@@ -64,8 +63,8 @@ val yardMap = mapOf(
     "દાહોદ (Dahod)" to listOf("દાહોદ APMC", "ઝાલોદ APMC"),
     "વડોદરા (Vadodara)" to listOf("વડોદરા APMC", "સાવલી APMC", "પાદરા APMC"),
     "છોટા ઉદેપુર (Chhota Udaipur)" to listOf("છોટા ઉદેપુર APMC", "બોડેલી APMC"),
-    
-    // Daxin Gujarat
+
+
     "સુરત (Surat)" to listOf("સુરત APMC", "બારડોલી APMC", "માંડવી (સુરત) APMC"),
     "નવસારી (Navsari)" to listOf("નવસારી APMC", "બીલીમોરા APMC"),
     "વલસાડ (Valsad)" to listOf("વલસાડ APMC", "ધરમપુર APMC"),
@@ -73,8 +72,8 @@ val yardMap = mapOf(
     "તાપી (Tapi)" to listOf("વ્યારા APMC", "નિઝર APMC"),
     "ભરૂચ (Bharuch)" to listOf("ભરૂચ APMC", "અંકલેશ્વર APMC", "જંબુસર APMC"),
     "નર્મદા (Narmada)" to listOf("રાજપીપળા APMC"),
-    
-    // Kutch
+
+
     "કચ્છ (Kutch)" to listOf("ભુજ APMC", "અંજાર APMC", "રાપર APMC", "ભચાઉ APMC", "માંડવી (કચ્છ) APMC")
 )
 
@@ -84,27 +83,27 @@ fun MarketScreen(onNavigate: (String) -> Unit, viewModel: MarketViewModel = view
     var selectedRegion by remember { mutableStateOf("સૌરાષ્ટ્ર") }
     val districts = districtMap[selectedRegion] ?: listOf()
     var selectedDistrict by remember { mutableStateOf(if (districts.isNotEmpty()) districts[0] else "Unknown") }
-    
-    // Reset district when region changes
+
+
     LaunchedEffect(selectedRegion) {
         val newDistricts = districtMap[selectedRegion] ?: listOf()
         if (newDistricts.isNotEmpty() && !newDistricts.contains(selectedDistrict)) {
             selectedDistrict = newDistricts[0]
         }
     }
-    
+
     val yards = yardMap[selectedDistrict] ?: listOf("તમામ યાર્ડ (All Yards)")
     var selectedYard by remember { mutableStateOf(if (yards.isNotEmpty()) yards[0] else "Unknown") }
-    
-    // Reset yard when district changes
+
+
     LaunchedEffect(selectedDistrict) {
         val newYards = yardMap[selectedDistrict] ?: listOf("તમામ યાર્ડ (All Yards)")
         if (newYards.isNotEmpty() && !newYards.contains(selectedYard)) {
             selectedYard = newYards[0]
         }
     }
-    
-    // Fetch data when district or yard changes
+
+
     LaunchedEffect(selectedDistrict, selectedYard) {
         viewModel.fetchMarketData(selectedDistrict, selectedYard)
     }
@@ -112,12 +111,12 @@ fun MarketScreen(onNavigate: (String) -> Unit, viewModel: MarketViewModel = view
     val marketData by viewModel.marketData.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
-    
+
     var searchQuery by remember { mutableStateOf("") }
 
-    
+
     Scaffold(
-        topBar = { HomeTopBar() }, // Reusing top bar
+        topBar = { HomeTopBar() },
         bottomBar = { AppBottomNavigation(currentRoute = "market", onNavigate = onNavigate) },
         containerColor = Color(0xFFF9F9F9)
     ) { innerPadding ->
@@ -128,7 +127,7 @@ fun MarketScreen(onNavigate: (String) -> Unit, viewModel: MarketViewModel = view
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Search Bar
+
             item {
                 OutlinedTextField(
                     value = searchQuery,
@@ -143,8 +142,8 @@ fun MarketScreen(onNavigate: (String) -> Unit, viewModel: MarketViewModel = view
                     )
                 )
             }
-            
-            // Dropdowns
+
+
             item {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     MarketDropdown(
@@ -163,8 +162,8 @@ fun MarketScreen(onNavigate: (String) -> Unit, viewModel: MarketViewModel = view
                     )
                 }
             }
-            
-            // Region Chips
+
+
             item {
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     items(regions) { region ->
@@ -182,8 +181,8 @@ fun MarketScreen(onNavigate: (String) -> Unit, viewModel: MarketViewModel = view
                     }
                 }
             }
-            
-            // Live Banner
+
+
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -209,8 +208,8 @@ fun MarketScreen(onNavigate: (String) -> Unit, viewModel: MarketViewModel = view
                     }
                 }
             }
-            
-            // Crops
+
+
             if (isLoading) {
                 item {
                     Box(modifier = Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) {
@@ -232,21 +231,21 @@ fun MarketScreen(onNavigate: (String) -> Unit, viewModel: MarketViewModel = view
                     marketData
                 } else {
                     val query = searchQuery.lowercase().trim()
-                    marketData.filter { 
+                    marketData.filter {
                         val cropEn = it.cropName.substringAfter("(").removeSuffix(")").lowercase().trim()
                         val cropGu = it.cropName.substringBefore("(").trim()
-                        
-                        it.cropName.lowercase().contains(query) || 
+
+                        it.cropName.lowercase().contains(query) ||
                         it.yard.lowercase().contains(query) ||
                         it.district.lowercase().contains(query) ||
-                        // Fuzzy search on English crop name (allow 2 typos)
+
                         (query.length >= 3 && levenshteinDistance(cropEn, query) <= 2) ||
-                        // If typing half a word, check if it starts with it
+
                         cropEn.startsWith(query) ||
                         cropGu.startsWith(query)
                     }
                 }
-                
+
                 if (filteredData.isEmpty()) {
                     item {
                         Box(modifier = Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) {
@@ -266,14 +265,14 @@ fun MarketScreen(onNavigate: (String) -> Unit, viewModel: MarketViewModel = view
                         cropName.contains("જીરું") || cropName.contains("Cumin") -> Icons.Default.Grass
                         else -> Icons.Default.Eco
                     }
-                    
+
                     item {
                         CropMarketSection(cropName, "", themeColor, icon) {
                             prices.forEach { price ->
                                 val rateStr = "${price.minPrice} - ${price.maxPrice}"
                                 val isUp = price.priceTrend.startsWith("+")
                                 val trendColor = if (isUp) TrendGreen else if (price.priceTrend.startsWith("-")) TrendRed else Color.Gray
-                                
+
                                 MarketRateCard(
                                     yardGu = price.yard,
                                     yardEn = price.district,
@@ -402,11 +401,11 @@ fun MarketRateCard(yardGu: String, yardEn: String, rate: String, arrival: String
                 }
             }
             Text("($yardEn)", color = Color.Gray, fontSize = 12.sp, modifier = Modifier.padding(bottom = 12.dp))
-            
+
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
                     Text("ભાવ (Rate)", color = Color.Gray, fontSize = 10.sp)
-                    Text(rate, fontWeight = FontWeight.Bold, color = Color(0xFFB71C1C), fontSize = 14.sp) // Dark Red for rate as per image
+                    Text(rate, fontWeight = FontWeight.Bold, color = Color(0xFFB71C1C), fontSize = 14.sp)
                 }
                 Column {
                     Text("આવક (Arrival)", color = Color.Gray, fontSize = 10.sp)

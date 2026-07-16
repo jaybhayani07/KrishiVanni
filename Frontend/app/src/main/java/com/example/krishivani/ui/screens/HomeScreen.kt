@@ -52,7 +52,7 @@ fun HomeScreen(
     val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
     val locationPermissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
 
-    // Prompt for location on launch
+
     LaunchedEffect(Unit) {
         if (!locationPermissionState.status.isGranted) {
             locationPermissionState.launchPermissionRequest()
@@ -69,7 +69,7 @@ fun HomeScreen(
                     }
                 }
             } catch (e: SecurityException) {
-                // Fallback to district dropdown
+
             }
         }
     }
@@ -80,7 +80,7 @@ fun HomeScreen(
     }
 
     Scaffold(
-        topBar = { 
+        topBar = {
             HomeTopBar(
                 currentLocation = currentLocation,
                 onDistrictSelected = { district ->
@@ -99,10 +99,10 @@ fun HomeScreen(
                         locationPermissionState.launchPermissionRequest()
                     }
                 }
-            ) 
+            )
         },
         bottomBar = { AppBottomNavigation(currentRoute = "home", onNavigate = onNavigate) },
-        containerColor = Color(0xFFF9F9F9) // Soft app background
+        containerColor = Color(0xFFF9F9F9)
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
@@ -141,11 +141,11 @@ fun HomeTopBar(
 ) {
     var expanded by remember { mutableStateOf(false) }
     val districts = listOf(
-        "અમદાવાદ", "અમરેલી", "અરવલ્લી", "આણંદ", "કચ્છ", "ખેડા", "ગાંધીનગર", 
-        "ગીર સોમનાથ", "છોટા ઉદેપુર", "જામનગર", "જુનાગઢ", "ડાંગ", "તાપી", 
-        "દાહોદ", "દેવભૂમિ દ્વારકા", "નર્મદા", "નવસારી", "પંચમહાલ", "પાટણ", 
-        "પોરબંદર", "બનાસકાંઠા", "બોટાદ", "ભરૂચ", "ભાવનગર", "મહીસાગર", 
-        "મહેસાણા", "મોરબી", "રાજકોટ", "વડોદરા", "વલસાડ", "સાબરકાંઠા", 
+        "અમદાવાદ", "અમરેલી", "અરવલ્લી", "આણંદ", "કચ્છ", "ખેડા", "ગાંધીનગર",
+        "ગીર સોમનાથ", "છોટા ઉદેપુર", "જામનગર", "જુનાગઢ", "ડાંગ", "તાપી",
+        "દાહોદ", "દેવભૂમિ દ્વારકા", "નર્મદા", "નવસારી", "પંચમહાલ", "પાટણ",
+        "પોરબંદર", "બનાસકાંઠા", "બોટાદ", "ભરૂચ", "ભાવનગર", "મહીસાગર",
+        "મહેસાણા", "મોરબી", "રાજકોટ", "વડોદરા", "વલસાડ", "સાબરકાંઠા",
         "સુરત", "સુરેન્દ્રનગર"
     )
 
@@ -205,7 +205,7 @@ fun HomeTopBar(
                 }
             }
             Spacer(modifier = Modifier.width(8.dp))
-            // GPS Button
+
             Box(
                 modifier = Modifier
                     .size(40.dp)
@@ -215,7 +215,7 @@ fun HomeTopBar(
             ) {
                 Icon(Icons.Default.LocationOn, contentDescription = "Use GPS", tint = Color.White)
             }
-            // Removed notification bell icon
+
         }
     }
 }
@@ -237,11 +237,11 @@ fun AppBottomNavigation(currentRoute: String, onNavigate: (String) -> Unit) {
             label = { Column(horizontalAlignment = Alignment.CenterHorizontally) { Text("બજાર"); Text("(Market)", fontSize = 10.sp) } },
             colors = NavigationBarItemDefaults.colors(selectedIconColor = PrimaryGreen, selectedTextColor = PrimaryGreen)
         )
-        // Camera Button (Prominent)
+
         NavigationBarItem(
             selected = currentRoute == "camera",
             onClick = { onNavigate("camera") },
-            icon = { 
+            icon = {
                 Box(
                     modifier = Modifier
                         .size(48.dp)
@@ -304,9 +304,9 @@ fun WeatherAndConsensusCard(data: HomeDashboardData) {
             ) {
                 Text("જમીન તાપમાન: ${data.soilTemperature}", color = Color.White, fontSize = 12.sp)
             }
-            
+
             Spacer(modifier = Modifier.height(16.dp))
-            
+
             Box(modifier = Modifier
                 .fillMaxWidth()
                 .background(ForecastLightBlue, RoundedCornerShape(12.dp))
@@ -340,10 +340,10 @@ fun WeatherAndConsensusCard(data: HomeDashboardData) {
                     }
                 }
             }
-            
+
             Spacer(modifier = Modifier.height(16.dp))
-            
-            // Farmer Consensus Alert
+
+
             if (data.warningDescGu.isNotEmpty()) {
                 Card(
                     colors = CardDefaults.cardColors(containerColor = WarningOrange),
@@ -419,13 +419,13 @@ fun CropHealthCard(data: HomeDashboardData) {
                         contentDescription = "Real Satellite NDVI Image",
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop,
-                        filterQuality = FilterQuality.None // This forces Nearest-Neighbor scaling for sharp pixels!
+                        filterQuality = FilterQuality.None
                     )
                 } else {
-                    // Programmatic Pixelated Satellite Heatmap Background
+
                     PixelatedHeatmapBackground()
                 }
-                
+
                 Card(
                     shape = RoundedCornerShape(12.dp),
                     colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -479,9 +479,9 @@ fun IrrigationAdvisorCard(viewModel: com.example.krishivani.viewmodel.HomeViewMo
     var selectedCropStage by rememberSaveable { mutableStateOf("Sowing") }
     var expanded by remember { mutableStateOf(false) }
     var lastWateringDate by rememberSaveable { mutableStateOf("") }
-    
+
     val crops = listOf(
-        "મગફળી (Groundnut)", "જીરું (Cumin)", "દિવેલા/એરંડા (Castor)", 
+        "મગફળી (Groundnut)", "જીરું (Cumin)", "દિવેલા/એરંડા (Castor)",
         "ઘઉં (Wheat)", "કપાસ (Cotton)", "ડુંગળી (Onion)",
         "ધાણા (Coriander)", "સોયાબીન (Soyabean)", "તલ (Sesame)"
     )
@@ -515,7 +515,7 @@ fun IrrigationAdvisorCard(viewModel: com.example.krishivani.viewmodel.HomeViewMo
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column {
-            // Blue Header
+
             Box(modifier = Modifier.fillMaxWidth().background(WeatherBlue).padding(16.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Default.WaterDrop, contentDescription = null, tint = Color.LightGray, modifier = Modifier.size(24.dp))
@@ -529,7 +529,7 @@ fun IrrigationAdvisorCard(viewModel: com.example.krishivani.viewmodel.HomeViewMo
             Column(modifier = Modifier.padding(16.dp)) {
                 Text("જમીનનો પ્રકાર (Soil Type)", fontWeight = FontWeight.Bold, color = Color.DarkGray, modifier = Modifier.padding(bottom = 8.dp))
                 Row(
-                    modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), 
+                    modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     val soils = listOf(
@@ -554,9 +554,9 @@ fun IrrigationAdvisorCard(viewModel: com.example.krishivani.viewmodel.HomeViewMo
                         }
                     }
                 }
-                
+
                 Spacer(modifier = Modifier.height(16.dp))
-                
+
                 Text("પાકનો તબક્કો (Crop Stage)", fontWeight = FontWeight.Bold, color = Color.DarkGray, modifier = Modifier.padding(bottom = 8.dp))
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     val stages = listOf("Sowing" to "વાવણી", "Growth" to "વૃદ્ધિ", "Flowering" to "ફૂલ")
@@ -577,18 +577,18 @@ fun IrrigationAdvisorCard(viewModel: com.example.krishivani.viewmodel.HomeViewMo
                         }
                     }
                 }
-                
+
                 Spacer(modifier = Modifier.height(24.dp))
-                
-                // Inner Beige Card
+
+
                 Card(
                     modifier = Modifier.fillMaxWidth().border(1.dp, Color(0xFFFFCC80), RoundedCornerShape(16.dp)),
                     shape = RoundedCornerShape(16.dp),
                     elevation = CardDefaults.cardElevation(0.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFFDF2E3)) // Soft beige background
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFFDF2E3))
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
-                        // Header
+
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Box(
                                 modifier = Modifier.size(56.dp).background(Color(0xFFFF6D00), RoundedCornerShape(16.dp)),
@@ -602,10 +602,10 @@ fun IrrigationAdvisorCard(viewModel: com.example.krishivani.viewmodel.HomeViewMo
                                 Text("(Next Furrow Irrigation Turn)", color = Color.Gray, fontSize = 12.sp)
                             }
                         }
-                        
+
                         Spacer(modifier = Modifier.height(24.dp))
-                        
-                        // Dropdown
+
+
                         Text("તમારો પાક પસંદ કરો (Select Your Crop)", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = Color.DarkGray, modifier = Modifier.padding(bottom = 8.dp))
                         Box(modifier = Modifier.fillMaxWidth()) {
                             Row(
@@ -637,9 +637,9 @@ fun IrrigationAdvisorCard(viewModel: com.example.krishivani.viewmodel.HomeViewMo
                                 }
                             }
                         }
-                        
+
                         Spacer(modifier = Modifier.height(16.dp))
-                        
+
                         Text("છેલ્લું પિયત ક્યારે આપ્યું? (Last Watering Date)", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = Color.DarkGray, modifier = Modifier.padding(bottom = 8.dp))
                         OutlinedTextField(
                             value = lastWateringDate,
@@ -656,10 +656,10 @@ fun IrrigationAdvisorCard(viewModel: com.example.krishivani.viewmodel.HomeViewMo
                                 }
                             }
                         )
-                        
+
                         Spacer(modifier = Modifier.height(16.dp))
-                        
-                        // 4 Days box
+
+
                         Card(
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(12.dp),
@@ -677,10 +677,10 @@ fun IrrigationAdvisorCard(viewModel: com.example.krishivani.viewmodel.HomeViewMo
                                 Text(if (days == 0) "(Irrigate today)" else "(Irrigate after $days days)", color = Color.Gray, fontSize = 12.sp)
                             }
                         }
-                        
+
                         Spacer(modifier = Modifier.height(16.dp))
-                        
-                        // Description green box
+
+
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -698,7 +698,7 @@ fun IrrigationAdvisorCard(viewModel: com.example.krishivani.viewmodel.HomeViewMo
                                 Text("($adviceEn)", color = Color(0xFF2E7D32), fontSize = 12.sp, modifier = Modifier.padding(start = 16.dp))
                             }
                         }
-                        
+
                         Spacer(modifier = Modifier.height(16.dp))
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                             Text("છેલ્લું ચાસ પિયત:", color = Color.Gray, fontSize = 12.sp)
@@ -774,7 +774,7 @@ fun AdvisoryItem(titleGu: String, titleEn: String, categoryGu: String, dateGu: S
                 modifier = Modifier
                     .size(40.dp)
                     .background(WarningOrange, RoundedCornerShape(8.dp))
-                    .clickable { /* Handle download action */ },
+                    .clickable {  },
                 contentAlignment = Alignment.Center
             ) {
                 Icon(Icons.Default.Download, contentDescription = "Download", tint = Color.White)
@@ -786,19 +786,19 @@ fun AdvisoryItem(titleGu: String, titleEn: String, categoryGu: String, dateGu: S
 @Composable
 fun PixelatedHeatmapBackground() {
     val colors = listOf(
-        Color(0xFF4CAF50), // Standard Green
-        Color(0xFF81C784), // Light Green
-        Color(0xFF388E3C), // Dark Green
-        Color(0xFFAED581), // Yellowish Green
-        Color(0xFFFFD54F)  // Yellow (Stress)
+        Color(0xFF4CAF50),
+        Color(0xFF81C784),
+        Color(0xFF388E3C),
+        Color(0xFFAED581),
+        Color(0xFFFFD54F)
     )
-    
-    // Create a 20x10 grid of small boxes to simulate a satellite heatmap
+
+
     Column(modifier = Modifier.fillMaxSize()) {
         for (i in 0 until 10) {
             Row(modifier = Modifier.weight(1f).fillMaxWidth()) {
                 for (j in 0 until 20) {
-                    // Use a deterministic pseudo-random color based on position so it doesn't flicker on recompose
+
                     val colorIndex = (i * 7 + j * 13) % colors.size
                     Box(modifier = Modifier.weight(1f).fillMaxHeight().background(colors[colorIndex]))
                 }

@@ -15,26 +15,26 @@ public class PythonRunnerService {
     @PostConstruct
     public void startPythonScript() {
         System.out.println("Starting YouTube Weather Analyzer Python Script...");
-        
+
         try {
-            // Path to the python script
+
             File scriptDir = new File("d:/Farmer/BackEnd/youtube_analyzer");
-            
+
             if (scriptDir.exists()) {
                 ProcessBuilder pb = new ProcessBuilder("python", "youtube_weather_analyzer.py");
                 pb.directory(scriptDir);
-                
-                // Redirect python script output to Java console
+
+
                 pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
                 pb.redirectError(ProcessBuilder.Redirect.INHERIT);
-                
-                // Start the process in the background
+
+
                 pythonProcess = pb.start();
                 System.out.println("Python script started successfully in the background.");
             } else {
                 System.err.println("Python script directory not found: " + scriptDir.getAbsolutePath());
             }
-            
+
         } catch (IOException e) {
             System.err.println("Failed to start Python script: " + e.getMessage());
         }

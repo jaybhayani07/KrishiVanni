@@ -36,7 +36,7 @@ fun AdvisoryScreen(
     Scaffold(
         topBar = { HomeTopBar() },
         bottomBar = { AppBottomNavigation(currentRoute = "advisory", onNavigate = onNavigate) },
-        containerColor = Color(0xFFF3F4F6) // Light gray background
+        containerColor = Color(0xFFF3F4F6)
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -44,7 +44,7 @@ fun AdvisoryScreen(
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
         ) {
-            // Filter Chips
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -57,14 +57,14 @@ fun AdvisoryScreen(
                 FilterChipCustom("હવામાન (Weather)", isSelected = false)
             }
 
-            // Expert Consensus Card
+
             if (uiState is HomeUiState.Success) {
                 val data = (uiState as HomeUiState.Success).data
-                
+
                 if (data.youtubeIsRunning == true) {
                     val progress = (data.youtubeProgress ?: 0) / 100f
                     val progressMessage = data.youtubeProgressMessage ?: "નવા વિડીયોનું પૃથ્થકરણ ચાલુ છે..."
-                    
+
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -93,14 +93,14 @@ fun AdvisoryScreen(
                             LinearProgressIndicator(
                                 progress = { progress },
                                 modifier = Modifier.fillMaxWidth().height(6.dp),
-                                color = Color(0xFF10B981), // Emerald green
+                                color = Color(0xFF10B981),
                                 trackColor = Color.White.copy(alpha = 0.3f),
                             )
                         }
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                 }
-                
+
                 ExpertConsensusCard(
                     pareshForecast = data.pareshForecast ?: "આગામી ૨૪ કલાકમાં ભારે વરસાદની સંભાવના. પિયત અને જંતુનાશક છંટકાવ ટાળો.",
                     ambalalForecast = data.ambalalForecast ?: "તાપમાનમાં અચાનક ઘટાડો થવાની શક્યતા. કપાસ અને મગફળીમાં રોગનું જોખમ વધી શકે.",
@@ -120,7 +120,7 @@ fun AdvisoryScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Weather Alert
+
             if (uiState is HomeUiState.Success) {
                 val alert = (uiState as HomeUiState.Success).data.warningDescGu
                 if (alert.isNotEmpty()) {
@@ -129,7 +129,7 @@ fun AdvisoryScreen(
                 }
             }
 
-            // Youtube Advisory Card
+
             if (uiState is HomeUiState.Success) {
                 val tips = (uiState as HomeUiState.Success).data.expertFarmingTips
                 if (!tips.isNullOrEmpty()) {
@@ -138,7 +138,7 @@ fun AdvisoryScreen(
                 }
             }
 
-            // JAU Official Bulletins
+
             JauBulletinsSection()
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -177,7 +177,7 @@ fun FilterChipCustom(text: String, isSelected: Boolean) {
 
 @Composable
 fun ExpertConsensusCard(
-    pareshForecast: String, 
+    pareshForecast: String,
     ambalalForecast: String,
     agreementPercentage: String,
     pareshIsLive: Boolean,
@@ -191,7 +191,7 @@ fun ExpertConsensusCard(
         colors = CardDefaults.cardColors(containerColor = WarningOrange)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            // Header
+
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
                     modifier = Modifier
@@ -210,7 +210,7 @@ fun ExpertConsensusCard(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Paresh Goswami
+
             ExpertItem(
                 avatarChar = "પ",
                 avatarColor = Color(0xFFD4AF37),
@@ -223,7 +223,7 @@ fun ExpertConsensusCard(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Ambalal Patel
+
             ExpertItem(
                 avatarChar = "અ",
                 avatarColor = Color(0xFF2563EB),
@@ -236,7 +236,7 @@ fun ExpertConsensusCard(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Agreement Bar
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -316,7 +316,7 @@ fun JauBulletinsSection() {
         elevation = CardDefaults.cardElevation(2.dp)
     ) {
         Column {
-            // Header
+
             Box(modifier = Modifier.fillMaxWidth().background(PrimaryGreen).padding(16.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Default.List, contentDescription = null, tint = Color.LightGray)
@@ -327,7 +327,7 @@ fun JauBulletinsSection() {
                     }
                 }
             }
-            
+
             Column(modifier = Modifier.padding(16.dp)) {
                 BulletinItem(
                     titleGu = "કપાસમાં ગુલાબી ઈયળ નિયંત્રણ",

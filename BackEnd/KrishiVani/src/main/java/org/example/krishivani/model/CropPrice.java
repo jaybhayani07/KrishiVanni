@@ -14,7 +14,7 @@ public class CropPrice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     private String cropName;
     private String district;
     private String yard;
@@ -24,5 +24,5 @@ public class CropPrice {
     private String arrivals;
     private String priceTrend;
     private String arrivalTrend;
-    private String cropType; // e.g., "groundnut", "cotton", "cumin"
+    private String cropType;
 }

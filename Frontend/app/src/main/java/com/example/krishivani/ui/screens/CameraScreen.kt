@@ -40,7 +40,7 @@ import com.example.krishivani.ui.theme.*
 fun CameraPreview(modifier: Modifier = Modifier, analyzer: DiseaseAnalyzer?) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val cameraExecutor = remember { Executors.newSingleThreadExecutor() }
-    
+
     DisposableEffect(Unit) {
         onDispose {
             cameraExecutor.shutdown()
@@ -52,13 +52,13 @@ fun CameraPreview(modifier: Modifier = Modifier, analyzer: DiseaseAnalyzer?) {
         factory = { context ->
             val previewView = PreviewView(context)
             val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
-            
+
             cameraProviderFuture.addListener({
                 val cameraProvider = cameraProviderFuture.get()
                 val preview = Preview.Builder().build().also {
                     it.setSurfaceProvider(previewView.surfaceProvider)
                 }
-                
+
                 val imageAnalyzer = ImageAnalysis.Builder()
                     .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                     .build()
@@ -81,7 +81,7 @@ fun CameraPreview(modifier: Modifier = Modifier, analyzer: DiseaseAnalyzer?) {
                     e.printStackTrace()
                 }
             }, ContextCompat.getMainExecutor(context))
-            
+
             previewView
         }
     )
@@ -91,7 +91,7 @@ fun CameraPreview(modifier: Modifier = Modifier, analyzer: DiseaseAnalyzer?) {
 fun CameraScreen(onNavigate: (String) -> Unit) {
     var photoTaken by remember { mutableStateOf(false) }
     var hasCameraPermission by remember { mutableStateOf(false) }
-    
+
     val context = LocalContext.current
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
@@ -123,7 +123,7 @@ fun CameraScreen(onNavigate: (String) -> Unit) {
     Scaffold(
         topBar = { HomeTopBar() },
         bottomBar = { AppBottomNavigation(currentRoute = "camera", onNavigate = onNavigate) },
-        containerColor = Color(0xFF1E2430) // Dark slate background for viewfinder
+        containerColor = Color(0xFF1E2430)
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -137,8 +137,8 @@ fun CameraScreen(onNavigate: (String) -> Unit) {
                     Text("કૅમેરાની પરવાનગી આપો (Grant Camera Permission)", color = Color.White)
                 }
             }
-            
-            // Viewfinder Grid Lines
+
+
             Column(modifier = Modifier.fillMaxSize()) {
                 Box(modifier = Modifier.weight(1f).fillMaxWidth().border(0.5.dp, Color(0xFF2D3748)))
                 Box(modifier = Modifier.weight(1f).fillMaxWidth().border(0.5.dp, Color(0xFF2D3748)))
@@ -157,8 +157,8 @@ fun CameraScreen(onNavigate: (String) -> Unit) {
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                
-                // Top Indicator Bar
+
+
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(24.dp),
@@ -177,8 +177,8 @@ fun CameraScreen(onNavigate: (String) -> Unit) {
                         Text("AI તૈયાર (AI Ready)", color = FavoriteYellow, fontWeight = FontWeight.Bold, fontSize = 14.sp)
                     }
                 }
-                
-                // Instruction Box
+
+
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -196,7 +196,7 @@ fun CameraScreen(onNavigate: (String) -> Unit) {
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                // Center reticle
+
                 Icon(
                     imageVector = Icons.Default.FilterCenterFocus,
                     contentDescription = null,
@@ -206,11 +206,11 @@ fun CameraScreen(onNavigate: (String) -> Unit) {
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                // Bottom actions
+
                 Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                    
+
                     if (photoTaken) {
-                        // Disease Detected Result Box
+
                         Card(
                             modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
                             shape = RoundedCornerShape(16.dp),
@@ -223,8 +223,8 @@ fun CameraScreen(onNavigate: (String) -> Unit) {
                                     Column {
                                         Text("સંભવિત રોગ શોધાયો (Disease Detected)", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
                                         Spacer(modifier = Modifier.height(4.dp))
-                                        
-                                        // Format: Label (Confidence%) -> We extract label and confidence
+
+
                                         val parts = livePrediction.split(" (")
                                         val diseaseName = parts.getOrNull(0) ?: livePrediction
                                         val confidenceScore = if (parts.size > 1) parts[1].replace(")", "") else ""
@@ -232,9 +232,9 @@ fun CameraScreen(onNavigate: (String) -> Unit) {
                                         Text(diseaseName, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
                                     }
                                 }
-                                
+
                                 Spacer(modifier = Modifier.height(16.dp))
-                                
+
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -243,14 +243,14 @@ fun CameraScreen(onNavigate: (String) -> Unit) {
                                 ) {
                                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                                         Text("વિશ્વાસ (Confidence):", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                                        
+
                                         val parts = livePrediction.split(" (")
                                         val confidenceScore = if (parts.size > 1) parts[1].replace(")", "") else ""
-                                        
+
                                         Text(confidenceScore, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
                                     }
                                 }
-                                
+
                                 Spacer(modifier = Modifier.height(12.dp))
                                 Text(
                                     "(Live TFLite AI Analysis Running...)",
@@ -262,12 +262,12 @@ fun CameraScreen(onNavigate: (String) -> Unit) {
                         }
                     }
 
-                    // Take Photo Button
+
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(WarningOrange, RoundedCornerShape(16.dp))
-                            .clickable { photoTaken = !photoTaken } // Toggle state for testing
+                            .clickable { photoTaken = !photoTaken }
                             .padding(16.dp),
                         contentAlignment = Alignment.Center
                     ) {
@@ -279,7 +279,7 @@ fun CameraScreen(onNavigate: (String) -> Unit) {
                     }
 
                     Spacer(modifier = Modifier.height(12.dp))
-                    
+
                     Text(
                         "Detect Disease - Take Photo • On-Device TFLite AI",
                         color = Color.LightGray,

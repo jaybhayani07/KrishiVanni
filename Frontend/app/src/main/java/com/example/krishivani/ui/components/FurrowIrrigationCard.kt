@@ -40,14 +40,14 @@ fun FurrowIrrigationCard(uiState: IrrigationUiState) {
                 .padding(20.dp)
         ) {
             Text(
-                text = "ચાસ / ધોરિયા પિયત વ્યવસ્થાપન", // Furrow Irrigation Management
+                text = "ચાસ / ધોરિયા પિયત વ્યવસ્થાપન",
                 style = MaterialTheme.typography.titleLarge.copy(
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp
                 ),
                 color = MaterialTheme.colorScheme.onSurface
             )
-            
+
             Spacer(modifier = Modifier.height(16.dp))
 
             when (uiState) {
@@ -59,24 +59,24 @@ fun FurrowIrrigationCard(uiState: IrrigationUiState) {
                 is IrrigationUiState.WaterToday -> {
                     StatusBanner(
                         text = "આજે જ પિયત આપો (${uiState.cropNameGu})",
-                        backgroundColor = Color(0xFFE8F5E9), // Light Green
-                        contentColor = Color(0xFF2E7D32), // Dark Green
+                        backgroundColor = Color(0xFFE8F5E9),
+                        contentColor = Color(0xFF2E7D32),
                         icon = Icons.Default.WaterDrop
                     )
                 }
                 is IrrigationUiState.DelayRainExpected -> {
                     StatusBanner(
                         text = "વરસાદની સંભાવના છે, પિયત લંબાવો (${uiState.rainfallMm} mm)",
-                        backgroundColor = Color(0xFFFFF3E0), // Light Orange
-                        contentColor = Color(0xFFE65100), // Dark Orange
+                        backgroundColor = Color(0xFFFFF3E0),
+                        contentColor = Color(0xFFE65100),
                         icon = Icons.Default.Warning
                     )
                 }
                 is IrrigationUiState.WaterInXDays -> {
                     StatusBanner(
                         text = "${uiState.days} દિવસ પછી પિયત આપો",
-                        backgroundColor = Color(0xFFE3F2FD), // Light Blue
-                        contentColor = Color(0xFF1565C0), // Dark Blue
+                        backgroundColor = Color(0xFFE3F2FD),
+                        contentColor = Color(0xFF1565C0),
                         icon = Icons.Default.WaterDrop
                     )
                 }

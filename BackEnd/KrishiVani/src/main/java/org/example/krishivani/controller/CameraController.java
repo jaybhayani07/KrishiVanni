@@ -18,14 +18,14 @@ public class CameraController {
 
     @PostMapping("/detect")
     public ResponseEntity<DiseaseDetection> detectDisease(@RequestParam("image") MultipartFile image) {
-        // In a real application, this image would be sent to an AI model for inference.
-        // For this mock architecture, we return a simulated database entry.
-        
+
+
+
         List<DiseaseDetection> mocks = diseaseDetectionRepository.findAll();
         if (mocks.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        // Return the first mock detection (Tikka Disease)
+
         return ResponseEntity.ok(mocks.get(0));
     }
 

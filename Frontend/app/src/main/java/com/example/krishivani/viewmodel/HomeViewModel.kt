@@ -24,7 +24,7 @@ class HomeViewModel : ViewModel() {
 
     var hasFetchedGpsLocation = false
 
-    // Map all 33 Gujarat districts to approximate lat/lon
+
     private val districtCoordinates = mapOf(
         "અમદાવાદ" to Pair(23.0225, 72.5714),
         "અમરેલી" to Pair(21.6032, 71.2158),
@@ -62,7 +62,7 @@ class HomeViewModel : ViewModel() {
     )
 
     init {
-        // Load default district (Junagadh)
+
         fetchDashboardData("જુનાગઢ")
     }
 
@@ -73,16 +73,16 @@ class HomeViewModel : ViewModel() {
         if (_uiState.value !is HomeUiState.Success) {
             _uiState.value = HomeUiState.Loading
         }
-        
+
         pollingJob?.cancel()
         pollingJob = viewModelScope.launch {
             while (true) {
                 try {
                     val response = RetrofitInstance.api.getHomeDashboardData(coords.first, coords.second)
                     _uiState.value = HomeUiState.Success(response.copy(location = district))
-                    
+
                     if (response.youtubeIsRunning != true) {
-                        break // Stop polling when finished
+                        break
                     }
                 } catch (e: Exception) {
                     if (_uiState.value !is HomeUiState.Success) {
@@ -90,7 +90,7 @@ class HomeViewModel : ViewModel() {
                     }
                     break
                 }
-                kotlinx.coroutines.delay(3000) // Poll every 3 seconds
+                kotlinx.coroutines.delay(3000)
             }
         }
     }
@@ -99,17 +99,17 @@ class HomeViewModel : ViewModel() {
         if (_uiState.value !is HomeUiState.Success) {
             _uiState.value = HomeUiState.Loading
         }
-        
+
         pollingJob?.cancel()
         pollingJob = viewModelScope.launch {
             while (true) {
                 try {
                     val response = RetrofitInstance.api.getHomeDashboardData(lat, lon)
-                    // Show "GPS Location" in Gujarati for live tracking
+
                     _uiState.value = HomeUiState.Success(response.copy(location = "તમારું વર્તમાન સ્થાન (GPS)"))
-                    
+
                     if (response.youtubeIsRunning != true) {
-                        break // Stop polling when finished
+                        break
                     }
                 } catch (e: Exception) {
                     if (_uiState.value !is HomeUiState.Success) {
@@ -117,7 +117,7 @@ class HomeViewModel : ViewModel() {
                     }
                     break
                 }
-                kotlinx.coroutines.delay(3000) // Poll every 3 seconds
+                kotlinx.coroutines.delay(3000)
             }
         }
     }
@@ -135,7 +135,7 @@ class HomeViewModel : ViewModel() {
                         lon = coords.second
                     }
                 }
-                
+
                 val request = com.example.krishivani.model.IrrigationRequest(
                     lat = lat,
                     lon = lon,
@@ -147,7 +147,7 @@ class HomeViewModel : ViewModel() {
                 val response = RetrofitInstance.api.getIrrigationAdvice(request)
                 _irrigationState.value = response
             } catch (e: Exception) {
-                // Silently ignore or show error
+
                 println("Irrigation Error: ${e.message}")
             }
         }

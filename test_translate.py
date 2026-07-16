@@ -1,6 +1,6 @@
 from youtube_transcript_api import YouTubeTranscriptApi
 try:
-    video_id = "_Ynw-6XsvkE" # Paresh goswami video ID
+    video_id = "_Ynw-6XsvkE"
     api = YouTubeTranscriptApi()
     transcript_list = api.list(video_id)
     transcript = transcript_list.find_transcript(['en', 'gu', 'hi'])

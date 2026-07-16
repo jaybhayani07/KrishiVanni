@@ -30,7 +30,7 @@ class MarketViewModel : ViewModel() {
                     district ?: ""
                 }
 
-                // Fix API spelling mismatches
+
                 englishDistrict = when (englishDistrict) {
                     "Junagadh" -> "Junagarh"
                     "Banaskantha" -> "Banaskanth"
@@ -41,15 +41,15 @@ class MarketViewModel : ViewModel() {
                 }
 
                 var response = RetrofitInstance.api.getMarketPrices(district = englishDistrict, yard = null)
-                
-                // Filter by yard locally if a specific yard is selected
+
+
                 if (yard != null && !yard.contains("તમામ યાર્ડ")) {
-                    // Extract Gujarati prefix (e.g., "ગોંડલ APMC" -> "ગોંડલ")
+
                     val yardPrefixGu = yard.replace(" APMC", "").trim()
-                    
-                    // Complete map for ALL yards across Gujarat
+
+
                     val yardMapGuToEn = mapOf(
-                        // Saurashtra
+
                         "રાજકોટ" to "Rajkot", "રાજકોટ બેડી" to "Rajkot", "ગોંડલ" to "Gondal", "જસદણ" to "Jasdan", "ધોરાજી" to "Dhoraji", "જેતપુર" to "Jetpur", "ઉપલેટા" to "Upleta",
                         "જુનાગઢ" to "Junagadh", "વિસાવદર" to "Visavadar", "માણાવદર" to "Manavdar",
                         "અમરેલી" to "Amreli", "સાવરકુંડલા" to "Savarkundla", "બાબરા" to "Babra",
@@ -61,16 +61,16 @@ class MarketViewModel : ViewModel() {
                         "બોટાદ" to "Botad",
                         "ઉના" to "Una", "વેરાવળ" to "Veraval", "તાલાલા" to "Talala",
                         "ખંભાળિયા" to "Khambhalia", "ભાણવડ" to "Bhanvad",
-                        
-                        // Uttar Gujarat
+
+
                         "દહેગામ" to "Dehgam", "માણસા" to "Mansa", "કલોલ" to "Kalol",
                         "ઊંઝા" to "Unjha", "મહેસાણા" to "Mehsana", "વિસનગર" to "Visnagar", "કડી" to "Kadi",
                         "પાટણ" to "Patan", "હારીજ" to "Harij", "રાધનપુર" to "Radhanpur",
                         "ડીસા" to "Deesa", "પાલનપુર" to "Palanpur", "થરાદ" to "Tharad", "ધાનેરા" to "Dhanera",
                         "હિંમતનગર" to "Himmat", "ઈડર" to "Idar", "પ્રાંતિજ" to "Prantij",
                         "મોડાસા" to "Modasa", "બાયડ" to "Bayad",
-                        
-                        // Madhya Gujarat
+
+
                         "અમદાવાદ" to "Ahmedabad", "બાવળા" to "Bavla", "સાણંદ" to "Sanand", "ધોળકા" to "Dholka",
                         "નડીયાદ" to "Nadiad", "કપડવંજ" to "Kapadvanj", "મહેમદાવાદ" to "Mahemdavad",
                         "આણંદ" to "Anand", "ઉમરેઠ" to "Umreth", "પેટલાદ" to "Petlad",
@@ -79,8 +79,8 @@ class MarketViewModel : ViewModel() {
                         "દાહોદ" to "Dahod", "ઝાલોદ" to "Zalod",
                         "વડોદરા" to "Vadodara", "સાવલી" to "Savli", "પાદરા" to "Padra",
                         "છોટા ઉદેપુર" to "Chhota", "બોડેલી" to "Bodeli",
-                        
-                        // Daxin Gujarat
+
+
                         "સુરત" to "Surat", "બારડોલી" to "Bardoli", "માંડવી (સુરત)" to "Mandvi",
                         "નવસારી" to "Navsari", "બીલીમોરા" to "Bilimora",
                         "વલસાડ" to "Valsad", "ધરમપુર" to "Dharampur",
@@ -88,20 +88,20 @@ class MarketViewModel : ViewModel() {
                         "વ્યારા" to "Vyara", "નિઝર" to "Nizar",
                         "ભરૂચ" to "Bharuch", "અંકલેશ્વર" to "Ankleshwar", "જંબુસર" to "Jambusar",
                         "રાજપીપળા" to "Rajpipla",
-                        
-                        // Kutch
+
+
                         "ભુજ" to "Bhuj", "અંજાર" to "Anjar", "રાપર" to "Rapar", "ભચાઉ" to "Bhachau", "માંડવી (કચ્છ)" to "Mandvi"
                     )
-                    
+
                     val yardPrefixEn = yardMapGuToEn[yardPrefixGu] ?: ""
-                    
-                    // Filter response where API yard contains the English prefix (case insensitive)
-                    response = response.filter { 
+
+
+                    response = response.filter {
                         (yardPrefixEn.isNotEmpty() && it.yard.startsWith(yardPrefixEn, ignoreCase = true)) ||
                         it.yard.startsWith(yardPrefixGu, ignoreCase = true)
                     }
                 }
-                
+
                 _marketData.value = response
             } catch (e: Exception) {
                 _errorMessage.value = "ડેટા લાવવામાં ભૂલ: ${e.localizedMessage}"

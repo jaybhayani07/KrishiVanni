@@ -10,7 +10,6 @@ from datetime import datetime
 from youtube_transcript_api import YouTubeTranscriptApi
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
 load_dotenv()
 
 CHANNELS = {
@@ -30,7 +29,7 @@ OUTPUT_FILE = r"D:\Farmer\BackEnd\KrishiVani\youtube_consensus.json"
 
 def get_latest_video_info(channel_url):
     try:
-        # Use yt-dlp to get the latest video ID and upload date
+
         result = subprocess.run(
             ["yt-dlp", "--print", "id", "--print", "upload_date", "--playlist-end", "1", channel_url],
             capture_output=True, text=True, check=True
@@ -38,19 +37,19 @@ def get_latest_video_info(channel_url):
         lines = result.stdout.strip().split('\n')
         video_id = lines[0]
         upload_date_str = lines[1] if len(lines) > 1 else ""
-        
-        # Check if upload date is today or yesterday (but only until 8 PM)
+
+
         from datetime import timedelta
         now = datetime.now()
         today_str = now.strftime("%Y%m%d")
         yesterday_str = (now - timedelta(days=1)).strftime("%Y%m%d")
-        
+
         is_live = False
         if upload_date_str == today_str:
             is_live = True
         elif upload_date_str == yesterday_str and now.hour < 20:
             is_live = True
-        
+
         return video_id, is_live
     except Exception as e:
         print(f"Error fetching latest video for {channel_url}: {e}")
@@ -58,7 +57,7 @@ def get_latest_video_info(channel_url):
 
 def get_transcript(video_id):
     try:
-        # Fetch transcript (prefer Gujarati, Hindi, or English)
+
         api = YouTubeTranscriptApi()
         transcript_list = api.list(video_id)
         transcript = transcript_list.find_transcript(['gu', 'hi', 'en'])
@@ -72,12 +71,12 @@ def get_transcript(video_id):
 def summarize_transcript(name, text):
     if not text:
         return "માહિતી ઉપલબ્ધ નથી."
-    # Truncate to 2500 chars to avoid hitting token limits per request
+
     if len(text) > 2500:
         text = text[:2500] + "... (truncated)"
-        
+
     prompt = f"નીચે {name} નો વિડીયો છે. આ વિડીયોમાંથી હવામાનની આગાહી અને ખેતીની ટિપ્સ (લગભગ ૩ થી ૫ વાક્યોમાં) કાઢો. કોઈ પણ મહત્વની માહિતી છૂટવી ન જોઈએ:\n\n{text}"
-    
+
     headers = {
         "Authorization": f"Bearer {GROQ_API_KEY}",
         "Content-Type": "application/json"
@@ -88,7 +87,7 @@ def summarize_transcript(name, text):
         "temperature": 0.1,
         "max_tokens": 300
     })
-    
+
     if response.status_code == 200:
         return response.json().get("choices", [{}])[0].get("message", {}).get("content", "")
     print(f"Error in summarize_transcript for {name}: {response.status_code} - {response.text}")
@@ -97,30 +96,30 @@ def summarize_transcript(name, text):
 def analyze_with_ollama(paresh_text, ambalal_text, jagat_text):
     print("Summarizing Paresh Goswami...")
     paresh_summary = summarize_transcript("પરેશ ગોસ્વામી", paresh_text)
-    
+
     print("Waiting 60 seconds for Groq rate limit...")
     time.sleep(60)
-    
+
     print("Summarizing Ambalal Patel...")
     ambalal_summary = summarize_transcript("અંબાલાલ પટેલ", ambalal_text)
-    
+
     print("Waiting 60 seconds for Groq rate limit...")
     time.sleep(60)
-    
+
     print("Summarizing Jagat Tat...")
     jagat_summary = summarize_transcript("જગત તાત", jagat_text)
-    
+
     print("Waiting 60 seconds for Groq rate limit...")
     time.sleep(60)
-    
+
     print("Generating final JSON...")
     prompt = f"""
     You are an expert Gujarati agricultural advisor. નીચે ગુજરાતના ત્રણ પ્રખ્યાત નિષ્ણાતોના વિડીયોનો ટૂંકો સાર (summary) આપેલો છે.
-    
+
     પરેશ ગોસ્વામી: {paresh_summary}
     અંબાલાલ પટેલ: {ambalal_summary}
     જગત તાત: {jagat_summary}
-    
+
     તમારે આ માહિતીનું વિશ્લેષણ કરીને નીચે મુજબ JSON ફોર્મેટમાં જ જવાબ આપવાનો છે (બીજું કોઈ લખાણ નહિ):
     {{
         "pareshForecast": "પરેશ ગોસ્વામીની હવામાન અંગેની મુખ્ય આગાહી (૫-૬ વાક્યોમાં ખૂબ જ વિગતવાર).",
@@ -133,7 +132,7 @@ def analyze_with_ollama(paresh_text, ambalal_text, jagat_text):
     અત્યંત મહત્વની સૂચના 2: farmingTips એ માત્ર વાક્યો (સ્ટ્રિંગ) નું લિસ્ટ હોવું જોઈએ, કોઈ ઓબ્જેક્ટ નહિ.
     દરેક ટિપ ૪-૫ વાક્યો લાંબી હોવી જોઈએ. જો તમારી પાસે માહિતી ઓછી હોય, તો ખેડૂતોને ઉપયોગી થાય તેવી સામાન્ય સમજૂતી ઉમેરીને પણ દરેક ટિપ લાંબી બનાવો.(લગભગ ૪૦-૫૦ શબ્દો) ની બનાવો. ફક્ત ૨ જ સૌથી મહત્વની ટિપ્સ આપો, જેથી લખાણ લાંબુ થઈ શકે.
     """
-    
+
     try:
         headers = {
             "Authorization": f"Bearer {GROQ_API_KEY}",
@@ -146,17 +145,17 @@ def analyze_with_ollama(paresh_text, ambalal_text, jagat_text):
             "max_tokens": 2000,
             "response_format": {"type": "json_object"}
         })
-        
+
         if response.status_code == 200:
             result = response.json()
             response_text = result.get("choices", [{}])[0].get("message", {}).get("content", "")
-            
-            # Clean up markdown code blocks if the model wrapped the JSON
+
+
             if "```json" in response_text:
                 response_text = response_text.split("```json")[1].split("```")[0].strip()
             elif "```" in response_text:
                 response_text = response_text.split("```")[1].split("```")[0].strip()
-                
+
             return json.loads(response_text)
         else:
             print(f"Groq API Error: {response.status_code} - {response.text}")
@@ -182,33 +181,33 @@ def run_job():
     try:
         update_status(True, 10, "પ્રારંભ થઈ રહ્યું છે (Initializing)...")
         print(f"[{datetime.now()}] Starting YouTube analysis job...")
-        
+
         update_status(True, 20, "લેટેસ્ટ વિડીયો શોધી રહ્યા છીએ (Finding latest videos)...")
         paresh_vid, paresh_live = get_latest_video_info(CHANNELS["paresh_goswami"])
         ambalal_vid, ambalal_live = get_latest_video_info(CHANNELS["ambalal_patel"])
         jagat_vid, jagat_live = get_latest_video_info(CHANNELS["jagat_tat"])
-        
+
         update_status(True, 40, "વિડીયોનું લખાણ ડાઉનલોડ થઈ રહ્યું છે (Downloading transcripts)...")
         paresh_text = get_transcript(paresh_vid) if paresh_vid else None
         ambalal_text = get_transcript(ambalal_vid) if ambalal_vid else None
         jagat_text = get_transcript(jagat_vid) if jagat_vid else None
-        
+
         if paresh_text or ambalal_text or jagat_text:
             update_status(True, 60, "AI પૃથ્થકરણ ચાલુ છે (AI Analysis in progress)...")
             print("Transcripts fetched. Calling analysis...")
             analysis = analyze_with_ollama(paresh_text, ambalal_text, jagat_text)
-            
+
             if analysis:
                 update_status(True, 95, "ફાઇનલ ડેટા સેવ થઈ રહ્યો છે (Saving final data)...")
                 analysis["lastUpdated"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 analysis["pareshIsLive"] = paresh_live
                 analysis["ambalalIsLive"] = ambalal_live
                 analysis["jagatIsLive"] = jagat_live
-                
-                # Ensure agreementPercentage exists
+
+
                 if "agreementPercentage" not in analysis:
                     analysis["agreementPercentage"] = "85%"
-                    
+
                 with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
                     json.dump(analysis, f, ensure_ascii=False, indent=4)
                 print(f"Analysis saved to {OUTPUT_FILE}")
@@ -221,12 +220,12 @@ def run_job():
 
 if __name__ == "__main__":
     print("YouTube Weather Analyzer Service Started...")
-    # Run once immediately
+
     run_job()
-    
-    # Then schedule to run every 6 hours
+
+
     schedule.every(6).hours.do(run_job)
-    
+
     while True:
         schedule.run_pending()
         time.sleep(60)
