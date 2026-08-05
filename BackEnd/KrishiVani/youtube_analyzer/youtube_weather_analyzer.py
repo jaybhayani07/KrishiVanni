@@ -44,11 +44,7 @@ def get_latest_video_info(channel_url):
         today_str = now.strftime("%Y%m%d")
         yesterday_str = (now - timedelta(days=1)).strftime("%Y%m%d")
 
-        is_live = False
-        if upload_date_str == today_str:
-            is_live = True
-        elif upload_date_str == yesterday_str and now.hour < 20:
-            is_live = True
+        is_live = True # Always show as Live/New for better user experience
 
         return video_id, is_live
     except Exception as e:
