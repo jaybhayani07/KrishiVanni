@@ -13,9 +13,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 CHANNELS = {
-    "paresh_goswami": "https://www.youtube.com/@pareshgoswami",
-    "ambalal_patel": "https://www.youtube.com/@AmbalalPatelOfficial",
-    "jagat_tat": "https://www.youtube.com/@JagatTat"
+    "paresh_goswami": "https://www.youtube.com/@pareshgoswami/videos",
+    "ambalal_patel": "https://www.youtube.com/@AmbalalPatelOfficial/videos",
+    "jagat_tat": "https://www.youtube.com/@JagatTat/videos"
 }
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
