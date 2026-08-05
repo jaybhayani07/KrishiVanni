@@ -2,4 +2,3 @@ yt-dlp
 requests
 python-dotenv
 schedule
-imageio-ffmpeg

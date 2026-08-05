@@ -71,11 +71,7 @@ def get_transcript(video_id):
         import subprocess
         import requests
         import os
-        try:
-            import imageio_ffmpeg
-            ffmpeg_path = imageio_ffmpeg.get_ffmpeg_exe()
-        except ImportError:
-            ffmpeg_path = "ffmpeg"
+        ffmpeg_path = "ffmpeg"
             
         audio_file = f"{video_id}.mp3"
         subprocess.run(
@@ -110,6 +106,10 @@ def get_transcript(video_id):
         else:
             print(f"Groq Whisper error: {res.text}")
             return None
+    except subprocess.CalledProcessError as ex:
+        error_msg = ex.stderr.decode('utf-8', errors='replace') if ex.stderr else 'No stderr'
+        print(f"Groq Whisper transcription failed (yt-dlp error): {ex}\nSTDERR: {error_msg}")
+        return None
     except Exception as ex:
         print(f"Groq Whisper transcription failed: {ex}")
         return None
