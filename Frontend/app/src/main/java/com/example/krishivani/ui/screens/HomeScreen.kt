@@ -153,6 +153,7 @@ fun HomeTopBar(
         modifier = Modifier
             .fillMaxWidth()
             .background(PrimaryGreen)
+            .statusBarsPadding()
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
