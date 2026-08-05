@@ -151,13 +151,17 @@ def analyze_with_ollama(paresh_text, ambalal_text, jagat_text):
             result = response.json()
             response_text = result.get("choices", [{}])[0].get("message", {}).get("content", "")
 
+            import re
+            json_match = re.search(r"\{.*\}", response_text, re.DOTALL)
+            if json_match:
+                response_text = json_match.group(0)
 
-            if "```json" in response_text:
-                response_text = response_text.split("```json")[1].split("```")[0].strip()
-            elif "```" in response_text:
-                response_text = response_text.split("```")[1].split("```")[0].strip()
-
-            return json.loads(response_text)
+            try:
+                return json.loads(response_text)
+            except Exception as e:
+                print(f"Failed to parse JSON: {e}")
+                print(f"Raw text: {response_text}")
+                return None
         else:
             print(f"Groq API Error: {response.status_code} - {response.text}")
             return None
