@@ -7,9 +7,9 @@ import schedule
 import sys
 sys.stdout.reconfigure(encoding='utf-8')
 from datetime import datetime
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 
-load_dotenv("../.env")
+load_dotenv(find_dotenv())
 
 CHANNELS = {
     "paresh_goswami": "UCoCCNfFug9Q5NLXxyZVFasQ",
@@ -66,10 +66,12 @@ def get_transcript(video_id):
         import subprocess
         import requests
         import os
+        import imageio_ffmpeg
         
-        audio_file = f"{video_id}.m4a"
+        ffmpeg_path = imageio_ffmpeg.get_ffmpeg_exe()
+        audio_file = f"{video_id}.mp3"
         subprocess.run(
-            [sys.executable, "-m", "yt_dlp", "-f", "139", "--playlist-end", "1", "-o", audio_file, f"https://www.youtube.com/watch?v={video_id}"],
+            [sys.executable, "-m", "yt_dlp", "-x", "--audio-format", "mp3", "--ffmpeg-location", ffmpeg_path, "--playlist-end", "1", "-o", audio_file, f"https://www.youtube.com/watch?v={video_id}"],
             check=True, capture_output=True
         )
         
@@ -82,12 +84,14 @@ def get_transcript(video_id):
                 return None
                 
         with open(audio_file, "rb") as f:
-            res = requests.post(
-                "https://api.groq.com/openai/v1/audio/transcriptions",
-                headers={"Authorization": f"Bearer {GROQ_API_KEY}"},
-                files={"file": f},
-                data={"model": "whisper-large-v3", "response_format": "json", "language": "gu"}
-            )
+            file_bytes = f.read()
+            
+        res = requests.post(
+            "https://api.groq.com/openai/v1/audio/transcriptions",
+            headers={"Authorization": f"Bearer {GROQ_API_KEY}"},
+            files={"file": ("audio.mp3", file_bytes, "audio/mpeg")},
+            data={"model": "whisper-large-v3-turbo", "response_format": "json"}
+        )
             
         if os.path.exists(audio_file):
             os.remove(audio_file)
