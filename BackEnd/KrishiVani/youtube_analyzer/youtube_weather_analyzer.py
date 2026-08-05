@@ -172,7 +172,7 @@ def update_status(is_running, progress=0, message=""):
             json.dump({
                 "isRunning": is_running,
                 "progress": progress,
-                "message": message
+                "progressMessage": message
             }, f, ensure_ascii=False)
     except Exception as e:
         print(f"Failed to update status: {e}")
