@@ -7,10 +7,9 @@ import schedule
 import sys
 sys.stdout.reconfigure(encoding='utf-8')
 from datetime import datetime
-from youtube_transcript_api import YouTubeTranscriptApi
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv("../.env")
 
 CHANNELS = {
     "paresh_goswami": "UCoCCNfFug9Q5NLXxyZVFasQ",
@@ -62,44 +61,38 @@ def get_latest_video_info(channel_id):
         return None, False
 
 def get_transcript(video_id):
+    print(f"Fetching audio for {video_id} to transcribe with Groq Whisper AI...")
     try:
-        transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=['gu'])
-        transcript_text = " ".join([t['text'] for t in transcript_list])
-        print(f"Successfully fetched auto-captions for {video_id}")
-        return transcript_text
-    except Exception as e:
-        print(f"Auto-captions failed for {video_id} (IP ban or missing). Fallback to Groq Whisper AI...")
-        try:
-            import subprocess
-            import requests
-            import os
-            
-            audio_file = f"{video_id}.m4a"
-            subprocess.run(
-                [sys.executable, "-m", "yt_dlp", "-f", "139", "--playlist-end", "1", "-o", audio_file, f"https://www.youtube.com/watch?v={video_id}"],
-                check=True, capture_output=True
+        import subprocess
+        import requests
+        import os
+        
+        audio_file = f"{video_id}.m4a"
+        subprocess.run(
+            [sys.executable, "-m", "yt_dlp", "-f", "139", "--playlist-end", "1", "-o", audio_file, f"https://www.youtube.com/watch?v={video_id}"],
+            check=True, capture_output=True
+        )
+        
+        with open(audio_file, "rb") as f:
+            res = requests.post(
+                "https://api.groq.com/openai/v1/audio/transcriptions",
+                headers={"Authorization": f"Bearer {GROQ_API_KEY}"},
+                files={"file": f},
+                data={"model": "whisper-large-v3", "response_format": "json", "language": "gu"}
             )
             
-            with open(audio_file, "rb") as f:
-                res = requests.post(
-                    "https://api.groq.com/openai/v1/audio/transcriptions",
-                    headers={"Authorization": f"Bearer {GROQ_API_KEY}"},
-                    files={"file": f},
-                    data={"model": "whisper-large-v3", "response_format": "json", "language": "gu"}
-                )
-                
-            if os.path.exists(audio_file):
-                os.remove(audio_file)
-                
-            if res.status_code == 200:
-                print(f"Groq Whisper successfully transcribed {video_id}")
-                return res.json().get("text", "")
-            else:
-                print(f"Groq Whisper error: {res.text}")
-                return None
-        except Exception as ex:
-            print(f"Groq Whisper fallback failed: {ex}")
+        if os.path.exists(audio_file):
+            os.remove(audio_file)
+            
+        if res.status_code == 200:
+            print(f"Groq Whisper successfully transcribed {video_id}")
+            return res.json().get("text", "")
+        else:
+            print(f"Groq Whisper error: {res.text}")
             return None
+    except Exception as ex:
+        print(f"Groq Whisper transcription failed: {ex}")
+        return None
 
 def summarize_transcript(name, text):
     if not text:
