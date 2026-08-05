@@ -75,7 +75,15 @@ def get_transcript(video_id):
             
         audio_file = f"{video_id}.mp3"
         subprocess.run(
-            [sys.executable, "-m", "yt_dlp", "-x", "--audio-format", "mp3", "--ffmpeg-location", ffmpeg_path, "--playlist-end", "1", "-o", audio_file, f"https://www.youtube.com/watch?v={video_id}"],
+            [
+                sys.executable, "-m", "yt_dlp", 
+                "--extractor-args", "youtube:client=android,web",
+                "-x", "--audio-format", "mp3", 
+                "--ffmpeg-location", ffmpeg_path, 
+                "--playlist-end", "1", 
+                "-o", audio_file, 
+                f"https://www.youtube.com/watch?v={video_id}"
+            ],
             check=True, capture_output=True
         )
         
