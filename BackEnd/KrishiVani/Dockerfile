@@ -8,8 +8,8 @@ RUN gradle clean build -x test
 FROM eclipse-temurin:21-jre-jammy
 WORKDIR /app
 
-# Install Python 3 and Pip
-RUN apt-get update && apt-get install -y python3 python3-pip python3-venv && rm -rf /var/lib/apt/lists/*
+# Install Python 3, Pip, and FFmpeg
+RUN apt-get update && apt-get install -y python3 python3-pip python3-venv ffmpeg && rm -rf /var/lib/apt/lists/*
 
 # Copy the built jar from the gradle build folder
 COPY --from=build /app/build/libs/*.jar app.jar

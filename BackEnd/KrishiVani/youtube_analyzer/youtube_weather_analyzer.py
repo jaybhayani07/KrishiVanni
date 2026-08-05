@@ -18,6 +18,11 @@ CHANNELS = {
 }
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+
+if not GROQ_API_KEY:
+    print("WARNING: GROQ_API_KEY is not set in environment variables! Audio transcription will fail.", flush=True)
+else:
+    print(f"GROQ_API_KEY is loaded successfully! ({len(GROQ_API_KEY)} chars)", flush=True)
 if not GROQ_API_KEY:
     print("Warning: GROQ_API_KEY not found in .env file")
 
@@ -66,9 +71,12 @@ def get_transcript(video_id):
         import subprocess
         import requests
         import os
-        import imageio_ffmpeg
-        
-        ffmpeg_path = imageio_ffmpeg.get_ffmpeg_exe()
+        try:
+            import imageio_ffmpeg
+            ffmpeg_path = imageio_ffmpeg.get_ffmpeg_exe()
+        except ImportError:
+            ffmpeg_path = "ffmpeg"
+            
         audio_file = f"{video_id}.mp3"
         subprocess.run(
             [sys.executable, "-m", "yt_dlp", "-x", "--audio-format", "mp3", "--ffmpeg-location", ffmpeg_path, "--playlist-end", "1", "-o", audio_file, f"https://www.youtube.com/watch?v={video_id}"],
