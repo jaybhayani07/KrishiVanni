@@ -13,9 +13,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 CHANNELS = {
-    "paresh_goswami": "https://www.youtube.com/@pareshgoswami/videos",
-    "ambalal_patel": "https://www.youtube.com/@AmbalalPatelOfficial/videos",
-    "jagat_tat": "https://www.youtube.com/@JagatTat/videos"
+    "paresh_goswami": "UCoCCNfFug9Q5NLXxyZVFasQ",
+    "ambalal_patel": "UCI7K8N8bGdRnY0ANgH6ccVw",
+    "jagat_tat": "UCxPtL1U71ZY6ZkuMzLK2iTQ"
 }
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
@@ -27,32 +27,38 @@ GROQ_MODEL = "llama-3.3-70b-versatile"
 
 OUTPUT_FILE = r"../youtube_consensus.json"
 
-def get_latest_video_info(channel_url):
+def get_latest_video_info(channel_id):
+    import urllib.request
+    import xml.etree.ElementTree as ET
+    from datetime import datetime, timezone
+    
+    url = f"https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}"
     try:
-
-        result = subprocess.run(
-            [sys.executable, "-m", "yt_dlp", "--print", "id", "--print", "upload_date", "--playlist-end", "1", channel_url],
-            capture_output=True, text=True, check=True
-        )
-        lines = result.stdout.strip().split('\n')
-        video_id = lines[0]
-        upload_date_str = lines[1] if len(lines) > 1 else ""
-
-
-        from datetime import timedelta
-        now = datetime.now()
-        today_str = now.strftime("%Y%m%d")
-        yesterday_str = (now - timedelta(days=1)).strftime("%Y%m%d")
-
-        is_live = False
-        if upload_date_str == today_str:
-            is_live = True
-        elif upload_date_str == yesterday_str and now.hour < 20:
-            is_live = True
-
+        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        response = urllib.request.urlopen(req).read()
+        root = ET.fromstring(response)
+        
+        # XML namespaces used in YouTube RSS
+        ns = {'yt': 'http://www.youtube.com/xml/schemas/2015', 'atom': 'http://www.w3.org/2005/Atom'}
+        
+        entry = root.find('atom:entry', ns)
+        if entry is None:
+            return None, False
+            
+        video_id = entry.find('yt:videoId', ns).text
+        published_str = entry.find('atom:published', ns).text
+        
+        # Parse ISO 8601 date (e.g., 2024-05-01T12:00:00+00:00)
+        published_date = datetime.fromisoformat(published_str)
+        now = datetime.now(timezone.utc)
+        
+        # If published within last 24 hours, consider it 'Live' / New
+        is_live = (now - published_date).total_seconds() < 86400
+        
+        print(f"Found latest video {video_id} for {channel_id}. Live: {is_live}")
         return video_id, is_live
     except Exception as e:
-        print(f"Error fetching latest video for {channel_url}: {e}")
+        print(f"Failed to fetch RSS for {channel_id}: {e}")
         return None, False
 
 def get_transcript(video_id):

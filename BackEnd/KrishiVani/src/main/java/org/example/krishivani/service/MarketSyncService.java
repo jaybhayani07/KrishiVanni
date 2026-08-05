@@ -48,25 +48,7 @@ public class MarketSyncService {
                 fetchAndSyncMarketPrices();
                 return;
             }
-
-            try {
-                Path syncFile = Paths.get("last_sync.txt");
-                if (Files.exists(syncFile)) {
-                    long lastModifiedTime = Files.getLastModifiedTime(syncFile).toMillis();
-                    LocalDate lastSyncDate = Instant.ofEpochMilli(lastModifiedTime).atZone(ZoneId.systemDefault()).toLocalDate();
-                    LocalDate today = LocalDate.now();
-
-                    if (lastSyncDate.isEqual(today)) {
-                        log.info("Data was already synced today ({}). Skipping startup sync.", today);
-                        return;
-                    }
-                }
-            } catch (Exception e) {
-                log.warn("Could not check last sync date. Defaulting to sync.");
-            }
-
-            log.info("Data is from a previous day. Running startup Data.gov.in sync in background...");
-            fetchAndSyncMarketPrices();
+            log.info("Market Yard Data already exists in database. Skipping startup sync. Background cron job will handle future updates.");
         }, "MarketSyncThread").start();
     }
 
