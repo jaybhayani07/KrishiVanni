@@ -18,10 +18,12 @@ public class PythonRunnerService {
 
         try {
 
-            File scriptDir = new File("d:/Farmer/BackEnd/youtube_analyzer");
+            File scriptDir = new File("youtube_analyzer");
 
             if (scriptDir.exists()) {
-                ProcessBuilder pb = new ProcessBuilder("python", "youtube_weather_analyzer.py");
+                // Determine OS to use the correct Python executable
+                String pythonCmd = System.getProperty("os.name").toLowerCase().contains("win") ? "python" : "python3";
+                ProcessBuilder pb = new ProcessBuilder(pythonCmd, "youtube_weather_analyzer.py");
                 pb.directory(scriptDir);
 
 

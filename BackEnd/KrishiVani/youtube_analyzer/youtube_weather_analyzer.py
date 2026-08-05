@@ -25,7 +25,7 @@ if not GROQ_API_KEY:
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 GROQ_MODEL = "llama-3.3-70b-versatile"
 
-OUTPUT_FILE = r"D:\Farmer\BackEnd\KrishiVani\youtube_consensus.json"
+OUTPUT_FILE = r"../youtube_consensus.json"
 
 def get_latest_video_info(channel_url):
     try:
@@ -165,7 +165,7 @@ def analyze_with_ollama(paresh_text, ambalal_text, jagat_text):
         return None
 
 def update_status(is_running, progress=0, message=""):
-    status_file = r"D:\Farmer\BackEnd\KrishiVani\youtube_status.json"
+    status_file = r"../youtube_status.json"
     import json
     try:
         with open(status_file, "w", encoding="utf-8") as f:
