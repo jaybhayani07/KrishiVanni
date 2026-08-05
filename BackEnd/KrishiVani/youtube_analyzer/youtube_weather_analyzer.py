@@ -31,7 +31,7 @@ def get_latest_video_info(channel_url):
     try:
 
         result = subprocess.run(
-            ["yt-dlp", "--print", "id", "--print", "upload_date", "--playlist-end", "1", channel_url],
+            [sys.executable, "-m", "yt_dlp", "--print", "id", "--print", "upload_date", "--playlist-end", "1", channel_url],
             capture_output=True, text=True, check=True
         )
         lines = result.stdout.strip().split('\n')
@@ -172,7 +172,7 @@ def update_status(is_running, progress=0, message=""):
             json.dump({
                 "isRunning": is_running,
                 "progress": progress,
-                "progressMessage": message
+                "message": message
             }, f, ensure_ascii=False)
     except Exception as e:
         print(f"Failed to update status: {e}")
