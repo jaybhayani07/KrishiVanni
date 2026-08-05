@@ -73,6 +73,14 @@ def get_transcript(video_id):
             check=True, capture_output=True
         )
         
+        # Groq Whisper has a 25MB limit. Skip if larger to avoid errors.
+        if os.path.exists(audio_file):
+            file_size_mb = os.path.getsize(audio_file) / (1024 * 1024)
+            if file_size_mb > 24:
+                print(f"Skipping {video_id} because audio is too large ({file_size_mb:.2f} MB)")
+                os.remove(audio_file)
+                return None
+                
         with open(audio_file, "rb") as f:
             res = requests.post(
                 "https://api.groq.com/openai/v1/audio/transcriptions",
