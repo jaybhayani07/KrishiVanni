@@ -23,7 +23,7 @@ public class PythonRunnerService {
             if (scriptDir.exists()) {
                 // Determine OS to use the correct Python executable
                 String pythonCmd = System.getProperty("os.name").toLowerCase().contains("win") ? "python" : "python3";
-                ProcessBuilder pb = new ProcessBuilder(pythonCmd, "youtube_weather_analyzer.py");
+                ProcessBuilder pb = new ProcessBuilder(pythonCmd, "-u", "youtube_weather_analyzer.py");
                 pb.directory(scriptDir);
 
 
