@@ -1,3 +1,6 @@
+Live demo := https://appetize.io/app/android/com.example.krishivani?device=pixel7&osVersion=13.0&toolbar=true  (First login to website, after it will show)
+
+
 # KrishiVani (કૃષિવાણી) 🌾
 
 KrishiVani is a modern, full-stack, AI-powered agricultural advisory platform designed specifically for farmers in Gujarat. It aggregates real-time agricultural data, live market prices, and AI-driven weather analysis to provide actionable farming tips.
