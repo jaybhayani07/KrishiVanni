@@ -1,4 +1,4 @@
-Live demo := https://appetize.io/app/android/com.example.krishivani?device=pixel7&osVersion=13.0&toolbar=true  (First login to website, after it will show)
+Live demo := https://appetize.io/app/android/com.example.krishivani?device=pixel7&osVersion=13.0&toolbar=true  (First login to website, after it will show, wait for 60-70 second , after it will show correct data)
 
 
 # KrishiVani (કૃષિવાણી) 🌾
