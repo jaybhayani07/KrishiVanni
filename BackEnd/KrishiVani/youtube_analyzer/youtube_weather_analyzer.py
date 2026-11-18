@@ -280,6 +280,12 @@ def run_job():
 
                 with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
                     json.dump(analysis, f, ensure_ascii=False, indent=4)
+                try:
+                    alt_output = os.path.join(BASE_DIR, "youtube_consensus.json")
+                    with open(alt_output, 'w', encoding='utf-8') as f:
+                        json.dump(analysis, f, ensure_ascii=False, indent=4)
+                except Exception:
+                    pass
                 print(f"Analysis saved to {OUTPUT_FILE}", flush=True)
             else:
                 print("Failed to get valid analysis.", flush=True)

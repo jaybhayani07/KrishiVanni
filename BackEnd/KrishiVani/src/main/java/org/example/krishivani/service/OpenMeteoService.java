@@ -1,6 +1,9 @@
 package org.example.krishivani.service;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.krishivani.dto.OpenMeteoResponse;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -12,6 +15,10 @@ public class OpenMeteoService {
 
     public OpenMeteoService() {
         this.restTemplate = new RestTemplate();
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        this.restTemplate.getMessageConverters().removeIf(c -> c instanceof MappingJackson2HttpMessageConverter);
+        this.restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter(objectMapper));
     }
 
     public OpenMeteoResponse fetchWeather(double latitude, double longitude) {

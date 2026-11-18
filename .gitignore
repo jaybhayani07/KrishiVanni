@@ -4,8 +4,6 @@
 # Python
 __pycache__/
 *.pyc
-youtube_consensus.json
-youtube_status.json
 *.m4a
 *.part
 *.ytdl

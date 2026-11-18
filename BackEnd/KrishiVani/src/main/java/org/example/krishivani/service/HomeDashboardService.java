@@ -91,8 +91,13 @@ public class HomeDashboardService {
                     }
                     dashboardData.setForecast(forecastList);
                 }
+            }
+        } catch (Exception e) {
+            System.err.println("Failed to fetch live weather: " + e.getMessage());
+        }
 
-                AgroNdviResponse latestScan = agromonitoringService.getLatestNdvi(lat, lon);
+        try {
+            AgroNdviResponse latestScan = agromonitoringService.getLatestNdvi(lat, lon);
                 double simulatedNdvi;
 
                 if (latestScan != null && latestScan.getData() != null && latestScan.getData().getMean() != null) {
@@ -141,13 +146,15 @@ public class HomeDashboardService {
                 }
 
                 homeDashboardRepository.save(dashboardData);
-            }
         } catch (Exception e) {
-            System.err.println("Failed to fetch live weather: " + e.getMessage());
+            System.err.println("Failed to fetch satellite data: " + e.getMessage());
         }
 
         try {
             java.io.File consensusFile = new java.io.File("youtube_consensus.json");
+            if (!consensusFile.exists()) {
+                consensusFile = new java.io.File("youtube_analyzer/youtube_consensus.json");
+            }
             if (consensusFile.exists()) {
                 com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
                 com.fasterxml.jackson.databind.JsonNode rootNode = mapper.readTree(consensusFile);
@@ -195,6 +202,9 @@ public class HomeDashboardService {
 
         try {
             java.io.File statusFile = new java.io.File("youtube_status.json");
+            if (!statusFile.exists()) {
+                statusFile = new java.io.File("youtube_analyzer/youtube_status.json");
+            }
             if (statusFile.exists()) {
                 com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
                 com.fasterxml.jackson.databind.JsonNode rootNode = mapper.readTree(statusFile);

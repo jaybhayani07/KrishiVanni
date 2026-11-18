@@ -16,6 +16,8 @@ COPY --from=build /app/build/libs/*.jar app.jar
 
 # Copy the python scripts
 COPY youtube_analyzer/ youtube_analyzer/
+COPY --from=build /app/youtube_consensus.json* ./
+COPY --from=build /app/youtube_status.json* ./
 
 # Install python requirements
 # Render Ubuntu image allows `--break-system-packages` or using a venv.

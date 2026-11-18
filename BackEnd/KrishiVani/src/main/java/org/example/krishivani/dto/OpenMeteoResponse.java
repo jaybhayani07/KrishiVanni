@@ -1,16 +1,19 @@
 package org.example.krishivani.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class OpenMeteoResponse {
     private CurrentWeather current;
     private DailyWeather daily;
 
     @Data
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class CurrentWeather {
         @JsonProperty("temperature_2m")
         private Double temperature;
@@ -29,6 +32,7 @@ public class OpenMeteoResponse {
     }
 
     @Data
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class DailyWeather {
         @JsonProperty("temperature_2m_max")
         private List<Double> maxTemp;
