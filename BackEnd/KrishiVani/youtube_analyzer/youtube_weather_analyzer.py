@@ -186,11 +186,11 @@ def analyze_with_ollama(paresh_text, ambalal_text, jagat_text):
     અંબાલાલ પટેલ: {ambalal_summary}
     જગત તાત: {jagat_summary}
 
-    Output JSON with these exact keys. All text in Gujarati, 1-2 concise sentences per field:
+    Output JSON with these exact keys. All text in Gujarati. Provide 3 to 4 concise and informative sentences per field:
     {{
-        "pareshForecast": "પરેશ ગોસ્વામીની આગાહી",
-        "ambalalForecast": "અંબાલાલ પટેલની આગાહી",
-        "combinedWeatherAlert": "બધા નિષ્ણાતોના મતે મુખ્ય એલર્ટ",
+        "pareshForecast": "પરેશ ગોસ્વામીની આગાહી (૩ થી ૪ વાક્યો)",
+        "ambalalForecast": "અંબાલાલ પટેલની આગાહી (૩ થી ૪ વાક્યો)",
+        "combinedWeatherAlert": "બધા નિષ્ણાતોના મતે મુખ્ય એલર્ટ અને ખેતી માર્ગદર્શન (૩ થી ૪ વાક્યો)",
         "agreementPercentage": "૭૫%",
         "farmingTips": ["ખેતી ટિપ ૧", "ખેતી ટિપ ૨"]
     }}
@@ -205,7 +205,7 @@ def analyze_with_ollama(paresh_text, ambalal_text, jagat_text):
             "model": GROQ_MODEL,
             "messages": [{"role": "user", "content": prompt}],
             "temperature": 0.1,
-            "max_tokens": 600
+            "max_tokens": 900
         })
 
         if response.status_code == 200:
