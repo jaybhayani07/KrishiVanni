@@ -23,7 +23,6 @@ public class HomeDashboardService {
         HomeDashboardData dashboardData;
 
         if (data.isEmpty()) {
-
             dashboardData = new HomeDashboardData();
             dashboardData.setLocation("Junagadh");
             dashboardData.setWarningTitleGu("સામાન્ય સ્થિતિ");
@@ -34,7 +33,6 @@ public class HomeDashboardService {
         } else {
             dashboardData = data.get(0);
         }
-
 
         try {
             OpenMeteoResponse weather = openMeteoService.fetchWeather(lat, lon);
@@ -67,7 +65,6 @@ public class HomeDashboardService {
                         HomeDashboardData.DailyForecast df = new HomeDashboardData.DailyForecast();
                         java.time.LocalDate date = java.time.LocalDate.parse(weather.getDaily().getTime().get(i));
 
-
                         if (i == todayIndex) {
                             df.setDayNameGu("આજે");
                         } else {
@@ -84,10 +81,8 @@ public class HomeDashboardService {
                         if (code <= 3) {
                             df.setIconName("Sunny");
                         } else if (code >= 95) {
-
                             df.setIconName(prob >= 20 ? "Thunder" : "Cloud");
                         } else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) {
-
                             df.setIconName(prob >= 20 ? "Rain" : "Cloud");
                         } else {
                             df.setIconName("Cloud");
@@ -97,13 +92,11 @@ public class HomeDashboardService {
                     dashboardData.setForecast(forecastList);
                 }
 
-
                 AgroNdviResponse latestScan = agromonitoringService.getLatestNdvi(lat, lon);
                 double simulatedNdvi;
 
                 if (latestScan != null && latestScan.getData() != null && latestScan.getData().getMean() != null) {
                     simulatedNdvi = latestScan.getData().getMean();
-
 
                     java.time.LocalDate realDate = java.time.Instant.ofEpochSecond(latestScan.getDt())
                             .atZone(java.time.ZoneId.systemDefault()).toLocalDate();
@@ -116,20 +109,19 @@ public class HomeDashboardService {
                         nextScan = nextScan.plusDays(5);
                     }
                     dashboardData.setNextScanDate(formatGujaratiDate(nextScan));
-
-
-                    String imageUrl = agromonitoringService.getLatestImageUrl(lat, lon);
-                    if (imageUrl != null) {
-                        dashboardData.setSatelliteImageUrl(imageUrl);
-                    }
                 } else {
-
-
                     if (lat > 23.0 && lat < 24.5 && lon > 68.0 && lon < 71.0) {
                         simulatedNdvi = 0.25 + (Math.random() * 0.15);
                     } else {
                         simulatedNdvi = 0.65 + (Math.random() * 0.20);
                     }
+                    dashboardData.setLastScanDate(formatGujaratiDate(LocalDate.now().minusDays(2)));
+                    dashboardData.setNextScanDate(formatGujaratiDate(LocalDate.now().plusDays(3)));
+                }
+
+                String imageUrl = agromonitoringService.getLatestImageUrl(lat, lon);
+                if (imageUrl != null) {
+                    dashboardData.setSatelliteImageUrl(imageUrl);
                 }
 
                 dashboardData.setNdviValue(String.format("%.2f", simulatedNdvi));
@@ -148,21 +140,11 @@ public class HomeDashboardService {
                     dashboardData.setCropHealthStatusEn("Poor");
                 }
 
-
-
-                if (latestScan == null || latestScan.getData() == null || latestScan.getData().getMean() == null) {
-                    dashboardData.setLastScanDate(formatGujaratiDate(LocalDate.now().minusDays(2)));
-                    dashboardData.setNextScanDate(formatGujaratiDate(LocalDate.now().plusDays(3)));
-                }
-
-
                 homeDashboardRepository.save(dashboardData);
             }
         } catch (Exception e) {
-
             System.err.println("Failed to fetch live weather: " + e.getMessage());
         }
-
 
         try {
             java.io.File consensusFile = new java.io.File("youtube_consensus.json");
@@ -210,7 +192,6 @@ public class HomeDashboardService {
         } catch (Exception e) {
             System.err.println("Failed to load YouTube consensus data: " + e.getMessage());
         }
-
 
         try {
             java.io.File statusFile = new java.io.File("youtube_status.json");

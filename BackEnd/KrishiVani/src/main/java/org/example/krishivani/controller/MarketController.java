@@ -3,6 +3,7 @@ package org.example.krishivani.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.krishivani.model.CropPrice;
 import org.example.krishivani.repository.CropPriceRepository;
+import org.example.krishivani.service.MarketSyncService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,18 +15,43 @@ import java.util.List;
 public class MarketController {
 
     private final CropPriceRepository cropPriceRepository;
+    private final MarketSyncService marketSyncService;
 
     @GetMapping
     public ResponseEntity<List<CropPrice>> getPrices(
             @RequestParam(required = false) String district,
             @RequestParam(required = false) String yard
     ) {
-        if (district != null && yard != null && !yard.equals("બધા યાર્ડ (All Yards)")) {
-            return ResponseEntity.ok(cropPriceRepository.findByDistrictAndYard(district, yard));
-        } else if (district != null) {
-            return ResponseEntity.ok(cropPriceRepository.findByDistrict(district));
+        if (district != null && !district.trim().isEmpty()) {
+            String d = district.trim();
+            if (yard != null && !yard.trim().isEmpty() && !yard.contains("તમામ યાર્ડ") && !yard.equalsIgnoreCase("all")) {
+                return ResponseEntity.ok(cropPriceRepository.findByDistrictAndYard(d, yard.trim()));
+            }
+            List<CropPrice> list = cropPriceRepository.findByDistrictFlexible(d);
+            return ResponseEntity.ok(list);
+        } else if (yard != null && !yard.trim().isEmpty() && !yard.contains("તમામ યાર્ડ") && !yard.equalsIgnoreCase("all")) {
+            return ResponseEntity.ok(cropPriceRepository.findByDistrictAndYard(district, yard.trim()));
         }
         return ResponseEntity.ok(cropPriceRepository.findAll());
+    }
+
+    @GetMapping("/districts")
+    public ResponseEntity<List<String>> getDistricts() {
+        return ResponseEntity.ok(cropPriceRepository.findAllDistinctDistricts());
+    }
+
+    @GetMapping("/yards")
+    public ResponseEntity<List<String>> getYards(@RequestParam(required = false) String district) {
+        if (district != null && !district.trim().isEmpty()) {
+            return ResponseEntity.ok(cropPriceRepository.findDistinctYardsByDistrict(district.trim()));
+        }
+        return ResponseEntity.ok(cropPriceRepository.findAllDistinctYards());
+    }
+
+    @PostMapping("/sync")
+    public ResponseEntity<String> syncPrices() {
+        new Thread(marketSyncService::fetchAndSyncMarketPrices).start();
+        return ResponseEntity.ok("Market prices sync started in background.");
     }
 
     @PostMapping("/mock-data")

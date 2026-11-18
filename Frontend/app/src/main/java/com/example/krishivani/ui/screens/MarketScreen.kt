@@ -32,58 +32,13 @@ val districtMap = mapOf(
     "દક્ષિણ ગુજરાત" to listOf("સુરત (Surat)", "નવસારી (Navsari)", "વલસાડ (Valsad)", "ડાંગ (Dang)", "તાપી (Tapi)", "ભરૂચ (Bharuch)", "નર્મદા (Narmada)"),
     "કચ્છ" to listOf("કચ્છ (Kutch)")
 )
-val yardMap = mapOf(
-
-    "રાજકોટ (Rajkot)" to listOf("રાજકોટ બેડી APMC", "ગોંડલ APMC", "જસદણ APMC", "ધોરાજી APMC", "જેતપુર APMC", "ઉપલેટા APMC"),
-    "જુનાગઢ (Junagadh)" to listOf("જુનાગઢ APMC", "વિસાવદર APMC", "માણાવદર APMC"),
-    "અમરેલી (Amreli)" to listOf("અમરેલી APMC", "સાવરકુંડલા APMC", "બાબરા APMC"),
-    "ભાવનગર (Bhavnagar)" to listOf("ભાવનગર APMC", "મહુવા APMC", "પાલીતાણા APMC"),
-    "સુરેન્દ્રનગર (Surendranagar)" to listOf("સુરેન્દ્રનગર APMC", "વઢવાણ APMC", "હળવદ APMC"),
-    "જામનગર (Jamnagar)" to listOf("જામનગર APMC", "ધ્રોલ APMC", "જામજોધપુર APMC"),
-    "પોરબંદર (Porbandar)" to listOf("પોરબંદર APMC"),
-    "મોરબી (Morbi)" to listOf("મોરબી APMC", "વાંકાનેર APMC"),
-    "બોટાદ (Botad)" to listOf("બોટાદ APMC"),
-    "ગીર સોમનાથ (Gir Somnath)" to listOf("ઉના APMC", "વેરાવળ APMC", "તાલાલા APMC"),
-    "દેવભૂમિ દ્વારકા (Devbhumi Dwarka)" to listOf("ખંભાળિયા APMC", "ભાણવડ APMC"),
-
-
-    "ગાંધીનગર (Gandhinagar)" to listOf("દહેગામ APMC", "માણસા APMC", "કલોલ APMC"),
-    "મહેસાણા (Mehsana)" to listOf("ઊંઝા APMC", "મહેસાણા APMC", "વિસનગર APMC", "કડી APMC"),
-    "પાટણ (Patan)" to listOf("પાટણ APMC", "હારીજ APMC", "રાધનપુર APMC"),
-    "બનાસકાંઠા (Banaskantha)" to listOf("ડીસા APMC", "પાલનપુર APMC", "થરાદ APMC", "ધાનેરા APMC"),
-    "સાબરકાંઠા (Sabarkantha)" to listOf("હિંમતનગર APMC", "ઈડર APMC", "પ્રાંતિજ APMC"),
-    "અરવલ્લી (Aravalli)" to listOf("મોડાસા APMC", "બાયડ APMC"),
-
-
-    "અમદાવાદ (Ahmedabad)" to listOf("અમદાવાદ APMC", "બાવળા APMC", "સાણંદ APMC", "ધોળકા APMC"),
-    "ખેડા (Kheda)" to listOf("નડીયાદ APMC", "કપડવંજ APMC", "મહેમદાવાદ APMC"),
-    "આણંદ (Anand)" to listOf("આણંદ APMC", "ઉમરેઠ APMC", "પેટલાદ APMC"),
-    "પંચમહાલ (Panchmahal)" to listOf("ગોધરા APMC", "હાલોલ APMC"),
-    "મહીસાગર (Mahisagar)" to listOf("લુણાવાડા APMC", "બાલાસિનોર APMC"),
-    "દાહોદ (Dahod)" to listOf("દાહોદ APMC", "ઝાલોદ APMC"),
-    "વડોદરા (Vadodara)" to listOf("વડોદરા APMC", "સાવલી APMC", "પાદરા APMC"),
-    "છોટા ઉદેપુર (Chhota Udaipur)" to listOf("છોટા ઉદેપુર APMC", "બોડેલી APMC"),
-
-
-    "સુરત (Surat)" to listOf("સુરત APMC", "બારડોલી APMC", "માંડવી (સુરત) APMC"),
-    "નવસારી (Navsari)" to listOf("નવસારી APMC", "બીલીમોરા APMC"),
-    "વલસાડ (Valsad)" to listOf("વલસાડ APMC", "ધરમપુર APMC"),
-    "ડાંગ (Dang)" to listOf("આહવા APMC"),
-    "તાપી (Tapi)" to listOf("વ્યારા APMC", "નિઝર APMC"),
-    "ભરૂચ (Bharuch)" to listOf("ભરૂચ APMC", "અંકલેશ્વર APMC", "જંબુસર APMC"),
-    "નર્મદા (Narmada)" to listOf("રાજપીપળા APMC"),
-
-
-    "કચ્છ (Kutch)" to listOf("ભુજ APMC", "અંજાર APMC", "રાપર APMC", "ભચાઉ APMC", "માંડવી (કચ્છ) APMC")
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MarketScreen(onNavigate: (String) -> Unit, viewModel: MarketViewModel = viewModel()) {
     var selectedRegion by remember { mutableStateOf("સૌરાષ્ટ્ર") }
     val districts = districtMap[selectedRegion] ?: listOf()
-    var selectedDistrict by remember { mutableStateOf(if (districts.isNotEmpty()) districts[0] else "Unknown") }
-
+    var selectedDistrict by remember { mutableStateOf(if (districts.isNotEmpty()) districts[0] else "રાજકોટ (Rajkot)") }
 
     LaunchedEffect(selectedRegion) {
         val newDistricts = districtMap[selectedRegion] ?: listOf()
@@ -92,28 +47,25 @@ fun MarketScreen(onNavigate: (String) -> Unit, viewModel: MarketViewModel = view
         }
     }
 
-    val yards = yardMap[selectedDistrict] ?: listOf("તમામ યાર્ડ (All Yards)")
-    var selectedYard by remember { mutableStateOf(if (yards.isNotEmpty()) yards[0] else "Unknown") }
-
-
-    LaunchedEffect(selectedDistrict) {
-        val newYards = yardMap[selectedDistrict] ?: listOf("તમામ યાર્ડ (All Yards)")
-        if (newYards.isNotEmpty() && !newYards.contains(selectedYard)) {
-            selectedYard = newYards[0]
-        }
-    }
-
-
-    LaunchedEffect(selectedDistrict, selectedYard) {
-        viewModel.fetchMarketData(selectedDistrict, selectedYard)
-    }
-
     val marketData by viewModel.marketData.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
 
-    var searchQuery by remember { mutableStateOf("") }
+    var selectedYard by remember { mutableStateOf("તમામ યાર્ડ (All Yards)") }
 
+    LaunchedEffect(selectedDistrict) {
+        selectedYard = "તમામ યાર્ડ (All Yards)"
+        viewModel.fetchMarketData(selectedDistrict, null)
+    }
+
+    val yards = remember(marketData, selectedDistrict) {
+        val list = mutableListOf("તમામ યાર્ડ (All Yards)")
+        val fetched = marketData.map { it.yard }.distinct().filter { it.isNotBlank() }.sorted()
+        list.addAll(fetched)
+        list
+    }
+
+    var searchQuery by remember { mutableStateOf("") }
 
     Scaffold(
         topBar = { HomeTopBar() },
@@ -143,7 +95,6 @@ fun MarketScreen(onNavigate: (String) -> Unit, viewModel: MarketViewModel = view
                 )
             }
 
-
             item {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     MarketDropdown(
@@ -157,12 +108,14 @@ fun MarketScreen(onNavigate: (String) -> Unit, viewModel: MarketViewModel = view
                         label = "યાર્ડ (Yard)",
                         options = yards,
                         selected = selectedYard,
-                        onSelected = { selectedYard = it },
+                        onSelected = { chosen ->
+                            selectedYard = chosen
+                            viewModel.fetchMarketData(selectedDistrict, chosen)
+                        },
                         modifier = Modifier.weight(1f)
                     )
                 }
             }
-
 
             item {
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -181,7 +134,6 @@ fun MarketScreen(onNavigate: (String) -> Unit, viewModel: MarketViewModel = view
                     }
                 }
             }
-
 
             item {
                 Card(
@@ -209,7 +161,6 @@ fun MarketScreen(onNavigate: (String) -> Unit, viewModel: MarketViewModel = view
                 }
             }
 
-
             if (isLoading) {
                 item {
                     Box(modifier = Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) {
@@ -218,12 +169,8 @@ fun MarketScreen(onNavigate: (String) -> Unit, viewModel: MarketViewModel = view
                 }
             } else if (errorMessage != null) {
                 item {
-                    Text(text = errorMessage ?: "", color = Color.Red, modifier = Modifier.padding(16.dp))
-                }
-            } else if (marketData.isEmpty()) {
-                item {
                     Box(modifier = Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) {
-                        Text("કોઈ ડેટા ઉપલબ્ધ નથી", color = Color.Gray)
+                        Text(errorMessage ?: "ભૂલ આવી છે", color = TrendRed)
                     }
                 }
             } else {
@@ -238,9 +185,7 @@ fun MarketScreen(onNavigate: (String) -> Unit, viewModel: MarketViewModel = view
                         it.cropName.lowercase().contains(query) ||
                         it.yard.lowercase().contains(query) ||
                         it.district.lowercase().contains(query) ||
-
                         (query.length >= 3 && levenshteinDistance(cropEn, query) <= 2) ||
-
                         cropEn.startsWith(query) ||
                         cropGu.startsWith(query)
                     }
@@ -255,34 +200,35 @@ fun MarketScreen(onNavigate: (String) -> Unit, viewModel: MarketViewModel = view
                 } else {
                     val groupedData = filteredData.groupBy { it.cropName }
                     groupedData.forEach { (cropName, prices) ->
-                    val themeColor = when {
-                        cropName.contains("કપાસ") || cropName.contains("Cotton") -> CottonRed
-                        cropName.contains("જીરું") || cropName.contains("Cumin") -> CuminYellow
-                        else -> PrimaryGreen
-                    }
-                    val icon = when {
-                        cropName.contains("કપાસ") || cropName.contains("Cotton") -> Icons.Default.FilterVintage
-                        cropName.contains("જીરું") || cropName.contains("Cumin") -> Icons.Default.Grass
-                        else -> Icons.Default.Eco
-                    }
+                        val themeColor = when {
+                            cropName.contains("કપાસ") || cropName.contains("Cotton") -> CottonRed
+                            cropName.contains("જીરું") || cropName.contains("Cumin") -> CuminYellow
+                            else -> PrimaryGreen
+                        }
+                        val icon = when {
+                            cropName.contains("કપાસ") || cropName.contains("Cotton") -> Icons.Default.FilterVintage
+                            cropName.contains("જીરું") || cropName.contains("Cumin") -> Icons.Default.Grass
+                            else -> Icons.Default.Eco
+                        }
 
-                    item {
-                        CropMarketSection(cropName, "", themeColor, icon) {
-                            prices.forEach { price ->
-                                val rateStr = "${price.minPrice} - ${price.maxPrice}"
-                                val isUp = price.priceTrend.startsWith("+")
-                                val trendColor = if (isUp) TrendGreen else if (price.priceTrend.startsWith("-")) TrendRed else Color.Gray
+                        item {
+                            CropMarketSection(cropName, "", themeColor, icon) {
+                                prices.forEach { price ->
+                                    val rateStr = "${price.minPrice} - ${price.maxPrice}"
+                                    val isUp = price.priceTrend.startsWith("+")
+                                    val trendColor = if (isUp) TrendGreen else if (price.priceTrend.startsWith("-")) TrendRed else Color.Gray
 
-                                MarketRateCard(
-                                    yardGu = price.yard,
-                                    yardEn = price.district,
-                                    rate = rateStr,
-                                    arrival = price.arrivals,
-                                    time = "Live",
-                                    trend = price.priceTrend,
-                                    trendColor = trendColor,
-                                    isUp = isUp
-                                )
+                                    MarketRateCard(
+                                        yardGu = price.yard,
+                                        yardEn = price.district,
+                                        rate = rateStr,
+                                        arrival = price.arrivals,
+                                        time = "Live",
+                                        trend = price.priceTrend,
+                                        trendColor = trendColor,
+                                        isUp = isUp
+                                    )
+                                }
                             }
                         }
                     }
@@ -290,7 +236,6 @@ fun MarketScreen(onNavigate: (String) -> Unit, viewModel: MarketViewModel = view
             }
         }
     }
-}
 }
 
 @Composable
