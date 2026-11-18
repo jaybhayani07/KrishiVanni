@@ -158,7 +158,10 @@ fun HomeTopBar(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier.weight(1f, fill = false),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Box(
                 modifier = Modifier
                     .size(40.dp)
@@ -170,10 +173,11 @@ fun HomeTopBar(
             }
             Spacer(modifier = Modifier.width(12.dp))
             Column {
-                Text(text = "નમસ્તે (Namaste)", color = Color.White, fontSize = 12.sp)
-                Text(text = "ખેડૂત", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                Text(text = "નમસ્તે (Namaste)", color = Color.White, fontSize = 12.sp, maxLines = 1)
+                Text(text = "ખેડૂત", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp, maxLines = 1)
             }
         }
+        Spacer(modifier = Modifier.width(8.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(modifier = Modifier.wrapContentSize(Alignment.TopStart)) {
                 Box(
@@ -185,7 +189,7 @@ fun HomeTopBar(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(imageVector = Icons.Default.LocationOn, contentDescription = null, tint = Color.White, modifier = Modifier.size(16.dp))
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text(currentLocation, color = Color.White, fontSize = 14.sp)
+                        Text(currentLocation, color = Color.White, fontSize = 14.sp, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
                         Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = null, tint = Color.White, modifier = Modifier.size(16.dp))
                     }
                 }
@@ -278,10 +282,13 @@ fun WeatherAndConsensusCard(data: HomeDashboardData) {
             ) {
                 Icon(Icons.Default.Cloud, contentDescription = null, tint = Color.White, modifier = Modifier.size(64.dp))
                 Spacer(modifier = Modifier.width(16.dp))
-                Text(data.temperature.replace("°C", ""), color = Color.White, fontSize = 64.sp, fontWeight = FontWeight.Bold)
-                Text("°C", color = Color.White, fontSize = 24.sp, modifier = Modifier.padding(top = 16.dp))
+                Text(data.temperature.replace("°C", ""), color = Color.White, fontSize = 52.sp, fontWeight = FontWeight.Bold)
+                Text("°C", color = Color.White, fontSize = 22.sp, modifier = Modifier.padding(top = 16.dp))
             }
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 Box(
                     modifier = Modifier
                         .background(Color(0xFF60A5FA), RoundedCornerShape(16.dp))
@@ -347,29 +354,31 @@ fun WeatherAndConsensusCard(data: HomeDashboardData) {
 
             if (data.warningDescGu.isNotEmpty()) {
                 Card(
+                    modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = WarningOrange),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Row(modifier = Modifier.padding(16.dp)) {
+                    Row(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
                         Icon(Icons.Default.Videocam, contentDescription = null, tint = Color.White, modifier = Modifier.size(32.dp))
                         Spacer(modifier = Modifier.width(12.dp))
-                        Column {
+                        Column(modifier = Modifier.weight(1f)) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(Icons.Default.CheckCircle, contentDescription = null, tint = PrimaryGreen, modifier = Modifier.size(16.dp))
                                 Spacer(modifier = Modifier.width(4.dp))
-                                Text(data.warningTitleGu.ifEmpty { "ખેડૂત સંમતિ (Farmers Consensus)" }, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color.Black)
+                                Text(data.warningTitleGu.ifEmpty { "ખેડૂત સંમતિ (Farmers Consensus)" }, fontWeight = FontWeight.Bold, fontSize = 16.sp, color = Color.Black)
                             }
                             Text(
                                 text = data.warningDescGu,
                                 color = Color.Black,
-                                fontSize = 12.sp,
+                                fontSize = 13.sp,
+                                lineHeight = 19.sp,
                                 modifier = Modifier.padding(vertical = 4.dp)
                             )
                             if (data.youtubeLastUpdated != null) {
                                 Text(
                                     text = "છેલ્લે અપડેટ: ${data.youtubeLastUpdated}",
                                     color = Color.DarkGray,
-                                    fontSize = 10.sp
+                                    fontSize = 11.sp
                                 )
                             }
                         }
@@ -410,7 +419,7 @@ fun CropHealthCard(data: HomeDashboardData) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp)
+                    .heightIn(min = 230.dp)
                     .clipToBounds(),
                 contentAlignment = Alignment.Center
             ) {
@@ -430,27 +439,27 @@ fun CropHealthCard(data: HomeDashboardData) {
                 Card(
                     shape = RoundedCornerShape(12.dp),
                     colors = CardDefaults.cardColors(containerColor = Color.White),
-                    modifier = Modifier.padding(24.dp)
+                    modifier = Modifier.padding(16.dp)
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.padding(24.dp)
+                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 14.dp)
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Box(modifier = Modifier.size(12.dp).clip(CircleShape).background(HealthGreen))
+                            Box(modifier = Modifier.size(10.dp).clip(CircleShape).background(HealthGreen))
                             Spacer(modifier = Modifier.width(8.dp))
-                            Text("LIVE SCAN", fontWeight = FontWeight.Bold, color = Color.Gray)
+                            Text("LIVE SCAN", fontWeight = FontWeight.Bold, color = Color.Gray, fontSize = 12.sp)
                         }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text("પાક સ્વાસ્થ્ય: ${data.cropHealthStatusGu}", color = PrimaryGreen, fontWeight = FontWeight.Bold, fontSize = 24.sp)
-                        Text("(Crop Health: ${data.cropHealthStatusEn})", color = Color.Gray, fontSize = 14.sp)
-                        Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Text("પાક સ્વાસ્થ્ય: ${data.cropHealthStatusGu}", color = PrimaryGreen, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                        Text("(Crop Health: ${data.cropHealthStatusEn})", color = Color.Gray, fontSize = 13.sp)
+                        Spacer(modifier = Modifier.height(10.dp))
                         Box(
                             modifier = Modifier
                                 .background(LightGreenBg, RoundedCornerShape(16.dp))
                                 .padding(horizontal = 16.dp, vertical = 6.dp)
                         ) {
-                            Text("NDVI: ${data.ndviValue}", color = PrimaryGreen, fontWeight = FontWeight.Bold)
+                            Text("NDVI: ${data.ndviValue}", color = PrimaryGreen, fontWeight = FontWeight.Bold, fontSize = 14.sp)
                         }
                     }
                 }
@@ -459,13 +468,13 @@ fun CropHealthCard(data: HomeDashboardData) {
                 modifier = Modifier.fillMaxWidth().background(Color(0xFF00C853)).padding(16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Column {
+                Column(modifier = Modifier.weight(1f)) {
                     Text("છેલ્લું સ્કેન (Last Scan)", color = Color.White, fontSize = 12.sp)
-                    Text(data.lastScanDate, color = Color.White, fontWeight = FontWeight.Bold)
+                    Text(data.lastScanDate, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 13.sp)
                 }
-                Column(horizontalAlignment = Alignment.End) {
+                Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.End) {
                     Text("આગળું સ્કેન (Next Scan)", color = Color.White, fontSize = 12.sp)
-                    Text(data.nextScanDate, color = Color.White, fontWeight = FontWeight.Bold)
+                    Text(data.nextScanDate, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 13.sp)
                 }
             }
         }
@@ -668,10 +677,10 @@ fun IrrigationAdvisorCard(viewModel: com.example.krishivani.viewmodel.HomeViewMo
                             elevation = CardDefaults.cardElevation(2.dp)
                         ) {
                             Column(modifier = Modifier.padding(vertical = 24.dp).fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text(days.toString(), color = Color(0xFFD84315), fontWeight = FontWeight.Bold, fontSize = 48.sp)
+                                Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.Center) {
+                                    Text(days.toString(), color = Color(0xFFD84315), fontWeight = FontWeight.Bold, fontSize = 40.sp)
                                     Spacer(modifier = Modifier.width(8.dp))
-                                    Text("દિવસ પછી", color = Color(0xFFD84315), fontWeight = FontWeight.Bold, fontSize = 36.sp)
+                                    Text("દિવસ પછી", color = Color(0xFFD84315), fontWeight = FontWeight.Bold, fontSize = 24.sp, modifier = Modifier.padding(bottom = 6.dp))
                                 }
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Text(if (days == 0) "આજે જ પિયત આપો" else "પિયત આપો", fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color(0xFF37474F))

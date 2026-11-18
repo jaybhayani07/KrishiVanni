@@ -142,14 +142,15 @@ fun MarketScreen(onNavigate: (String) -> Unit, viewModel: MarketViewModel = view
                     colors = CardDefaults.cardColors(containerColor = PrimaryGreen)
                 ) {
                     Row(modifier = Modifier.padding(16.dp).fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
+                        Row(modifier = Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
                             Icon(Icons.Default.BarChart, contentDescription = null, tint = Color.White)
                             Spacer(modifier = Modifier.width(8.dp))
                             Column {
-                                Text("આજના બજાર ભાવ", fontWeight = FontWeight.Bold, color = Color.White, fontSize = 18.sp)
-                                Text("All Gujarat APMC Live Rates", color = Color.White, fontSize = 12.sp)
+                                Text("આજના બજાર ભાવ", fontWeight = FontWeight.Bold, color = Color.White, fontSize = 18.sp, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                                Text("All Gujarat APMC Live Rates", color = Color.White, fontSize = 12.sp, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
                             }
                         }
+                        Spacer(modifier = Modifier.width(8.dp))
                         Box(modifier = Modifier.background(Color.Red, RoundedCornerShape(16.dp)).padding(horizontal = 12.dp, vertical = 4.dp)) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Box(modifier = Modifier.size(8.dp).clip(CircleShape).background(Color.White))
@@ -253,7 +254,8 @@ fun MarketDropdown(label: String, options: List<String>, selected: String, onSel
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(selected, fontWeight = FontWeight.Bold, color = PrimaryGreen, fontSize = 12.sp, maxLines = 1)
+                Text(selected, fontWeight = FontWeight.Bold, color = PrimaryGreen, fontSize = 12.sp, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
+                Spacer(modifier = Modifier.width(4.dp))
                 Icon(Icons.Default.KeyboardArrowDown, contentDescription = null, tint = PrimaryGreen)
             }
             DropdownMenu(
@@ -348,15 +350,15 @@ fun MarketRateCard(yardGu: String, yardEn: String, rate: String, arrival: String
             Text("($yardEn)", color = Color.Gray, fontSize = 12.sp, modifier = Modifier.padding(bottom = 12.dp))
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Column {
+                Column(modifier = Modifier.weight(1.2f)) {
                     Text("ભાવ (Rate)", color = Color.Gray, fontSize = 10.sp)
-                    Text(rate, fontWeight = FontWeight.Bold, color = Color(0xFFB71C1C), fontSize = 14.sp)
+                    Text(rate, fontWeight = FontWeight.Bold, color = Color(0xFFB71C1C), fontSize = 13.sp)
                 }
-                Column {
+                Column(modifier = Modifier.weight(1f)) {
                     Text("આવક (Arrival)", color = Color.Gray, fontSize = 10.sp)
-                    Text(arrival, fontWeight = FontWeight.Bold, color = Color.DarkGray, fontSize = 14.sp)
+                    Text(arrival, fontWeight = FontWeight.Bold, color = Color.DarkGray, fontSize = 13.sp)
                 }
-                Column(horizontalAlignment = Alignment.End) {
+                Column(modifier = Modifier.weight(0.8f), horizontalAlignment = Alignment.End) {
                     Text("અપડેટ", color = Color.Gray, fontSize = 10.sp)
                     Text(time, fontWeight = FontWeight.Bold, color = Color.DarkGray, fontSize = 12.sp)
                 }

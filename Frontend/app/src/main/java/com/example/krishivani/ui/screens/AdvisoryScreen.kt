@@ -278,7 +278,10 @@ fun ExpertItem(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    modifier = Modifier.weight(1f),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Box(
                         modifier = Modifier.size(40.dp).clip(CircleShape).background(avatarColor),
                         contentAlignment = Alignment.Center
@@ -286,11 +289,12 @@ fun ExpertItem(
                         Text(avatarChar, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
                     }
                     Spacer(modifier = Modifier.width(12.dp))
-                    Column {
-                        Text(name, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                        Text(sub, color = Color.White, fontSize = 10.sp)
+                    Column(modifier = Modifier.weight(1f, fill = false)) {
+                        Text(name, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                        Text(sub, color = Color.White, fontSize = 11.sp, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
                     }
                 }
+                Spacer(modifier = Modifier.width(8.dp))
                 Box(
                     modifier = Modifier.background(if (isLive) Color(0xFF00E676) else Color.Gray, RoundedCornerShape(12.dp)).padding(horizontal = 8.dp, vertical = 4.dp)
                 ) {
@@ -404,7 +408,7 @@ fun BulletinItem(titleGu: String, titleEn: String, tagText: String, tagColor: Co
                     Icon(Icons.Default.Info, contentDescription = null, tint = Color.White)
                 }
                 Spacer(modifier = Modifier.width(12.dp))
-                Column {
+                Column(modifier = Modifier.weight(1f)) {
                     Text(titleGu, fontWeight = FontWeight.Bold, color = Color.DarkGray, fontSize = 14.sp)
                     Text(titleEn, color = Color.Gray, fontSize = 12.sp)
                     Spacer(modifier = Modifier.height(8.dp))
